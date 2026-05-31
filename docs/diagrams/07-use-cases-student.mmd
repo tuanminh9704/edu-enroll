@@ -1,0 +1,82 @@
+flowchart LR
+    Visitor(["Khach truy cap"])
+    Student(["Hoc vien / Phu huynh"])
+    VNPay(["VNPay"])
+    Email(["Email Service"])
+    Cloudinary(["Cloudinary"])
+
+    subgraph System["Use case hoc vien"]
+        subgraph Public["Cong khai"]
+            UC01(("UC01\nXem trang chu,\nbanner, tin tuc"))
+        end
+
+        subgraph Auth["Tai khoan"]
+            UC02(("UC02\nDang ky tai khoan"))
+            UC03(("UC03\nXac thuc OTP"))
+            UC04(("UC04\nDang nhap"))
+            UC05(("UC05\nDang xuat /\nrefresh token"))
+            UC06(("UC06\nQuen / doi mat khau"))
+            UC07(("UC07\nCap nhat ca nhan"))
+        end
+
+        subgraph Enrollment["Ho so tuyen sinh 6 buoc"]
+            UC08(("UC08\nKhoi tao / xem ho so"))
+            UC09(("UC09\nKy cam ket"))
+            UC10(("UC10\nThanh toan le phi"))
+            UC11(("UC11\nDien ho so"))
+            UC12(("UC12\nUpload file"))
+            UC13(("UC13\nDang ky lich thi"))
+            UC14(("UC14\nBo qua thi"))
+            UC15(("UC15\nXem ket qua thi"))
+            UC16(("UC16\nTiep tuc chon chuong trinh"))
+            UC17(("UC17\nChon chuong trinh"))
+            UC18(("UC18\nNop ho so goc"))
+            UC19(("UC19\nPhuc khao"))
+            UC20(("UC20\nPhong van"))
+            UC21(("UC21\nHoa don"))
+            UC22(("UC22\nThong bao"))
+        end
+    end
+
+    Visitor --> UC01
+    Student --> UC02
+    Student --> UC03
+    Student --> UC04
+    Student --> UC05
+    Student --> UC06
+    Student --> UC07
+    Student --> UC08
+    Student --> UC09
+    Student --> UC10
+    Student --> UC11
+    Student --> UC12
+    Student --> UC13
+    Student --> UC14
+    Student --> UC15
+    Student --> UC16
+    Student --> UC17
+    Student --> UC18
+    Student --> UC19
+    Student --> UC20
+    Student --> UC21
+    Student --> UC22
+
+    Email --> UC02
+    Email --> UC03
+    Email --> UC06
+    Email --> UC22
+    VNPay --> UC10
+    Cloudinary --> UC12
+
+    UC02 -. include .-> UC03
+    UC08 --> UC09 --> UC10 --> UC11
+    UC11 -. include .-> UC12
+    UC11 --> UC13
+    UC11 --> UC14
+    UC13 --> UC15 --> UC16 --> UC17 --> UC18
+    UC14 --> UC17
+
+    classDef actor fill:#fff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#eef6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a;
+    class Visitor,Student,VNPay,Email,Cloudinary actor;
+    class UC01,UC02,UC03,UC04,UC05,UC06,UC07,UC08,UC09,UC10,UC11,UC12,UC13,UC14,UC15,UC16,UC17,UC18,UC19,UC20,UC21,UC22 usecase;

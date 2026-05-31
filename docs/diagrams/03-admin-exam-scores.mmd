@@ -1,0 +1,51 @@
+﻿sequenceDiagram
+    autonumber
+    actor AdminUser as Admin
+    actor Student as Hoc vien
+    participant App as React App
+    participant Admin as Admin API
+    participant Enroll as Enrollment API
+    participant Notify as Notification Service
+    participant DB as MongoDB
+
+    AdminUser->>App: Tao ky thi
+    App->>Admin: POST /api/admin/exam-schedules
+    Admin->>DB: Validate ngay thi co dinh, tao ExamSchedule
+
+    AdminUser->>App: Tao phong thi
+    App->>Admin: POST /api/admin/exam-schedules/:id/rooms
+    Admin->>DB: Tao ExamRoom voi capacity/location
+
+    AdminUser->>App: Xep hoc vien vao ky thi
+    App->>Admin: POST /api/admin/exam-schedules/:id/assign-by-date
+    Admin->>DB: Tim EnrollmentForm phu hop ngay thi/ngon ngu
+    loop tung ho so hop le
+        Admin->>DB: Tao/di chuyen ExamRegistration
+        Admin->>DB: Cap nhat exam_schedule_id, exam_confirmed
+        Admin->>DB: Ghi EnrollmentLog
+        Admin->>Notify: Thong bao hoc vien
+    end
+
+    AdminUser->>App: Xep phong tu dong
+    App->>Admin: POST /api/admin/exam-schedules/:id/auto-assign-rooms
+    Admin->>DB: Gan room_id va exam_code theo suc chua
+
+    AdminUser->>App: Cong bo phong thi
+    App->>Admin: POST /api/admin/exam-rooms/publish
+    Admin->>DB: Set rooms_published = true
+
+    Student->>App: Tra cuu lich/phong thi
+    App->>Enroll: GET /api/enrollments/exam/result
+    Enroll->>DB: Lay ExamRegistration + ExamRoom neu da publish
+    Enroll-->>App: Phong thi, so bao danh, trang thai
+
+    AdminUser->>App: Danh so tui va ma phach
+    App->>Admin: POST /api/admin/exam-schedules/:id/generate-bags
+    Admin->>DB: Tao bag_number va anonymous_code
+
+    AdminUser->>App: Nhap diem
+    App->>Admin: POST /api/admin/exam-registrations/:registrationId/score
+    Admin->>DB: Tao/Cap nhat ExamScore
+    Admin->>DB: Cap nhat EnrollmentForm exam_score, level, pass_status
+    Admin->>DB: Ghi EnrollmentLog
+    Admin->>Notify: Gui ket qua cho hoc vien

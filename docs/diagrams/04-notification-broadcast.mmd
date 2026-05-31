@@ -1,0 +1,31 @@
+﻿sequenceDiagram
+    autonumber
+    actor AdminUser as Admin
+    actor User as Nguoi dung
+    participant App as React App
+    participant Admin as Admin API
+    participant NotifyAPI as Notification API
+    participant Notify as Notification Service
+    participant Mail as Email Service
+    participant DB as MongoDB
+
+    AdminUser->>App: Gui thong bao hang loat
+    App->>Admin: POST /api/admin/notifications/broadcast
+    Admin->>DB: Tim User active theo role neu co
+    loop moi user
+        Admin->>Notify: create(userId, title, message, type, link)
+        Notify->>DB: Tao Notification
+        opt link la /ho-so hoac sendEmail=true
+            Notify-->>Mail: Gui notification email nen
+        end
+    end
+    Admin-->>App: So luong da gui
+
+    User->>App: Mo trang thong bao
+    App->>NotifyAPI: GET /api/notifications
+    NotifyAPI->>DB: Lay danh sach + total + unread
+    NotifyAPI-->>App: Notifications
+
+    User->>App: Danh dau da doc
+    App->>NotifyAPI: PATCH /api/notifications/:id/read
+    NotifyAPI->>DB: Set is_read = true

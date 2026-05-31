@@ -1,0 +1,57 @@
+flowchart LR
+    Admin(["Admin / Super Admin"])
+    Student(["Hoc vien"])
+    Email(["Email Service"])
+
+    subgraph System["Use case quan tri"]
+        UC04(("UC04\nDang nhap"))
+        UC05(("UC05\nDang xuat /\nrefresh token"))
+        UC22(("UC22\nXem / danh dau\nthong bao"))
+        UC23(("UC23\nXem dashboard\nthong ke"))
+        UC24(("UC24\nQuan ly\nnguoi dung"))
+        UC25(("UC25\nQuan ly ho so\ntuyen sinh"))
+        UC26(("UC26\nQuan ly lich thi /\nphong thi"))
+        UC27(("UC27\nXep hoc vien\nvao ky thi"))
+        UC28(("UC28\nDanh so tui /\nma phach"))
+        UC29(("UC29\nNhap / dong bo\ndiem thi"))
+        UC30(("UC30\nQuan ly chuong trinh\ndao tao"))
+        UC31(("UC31\nImport / export CSV"))
+        UC32(("UC32\nGui thong bao\nhang loat"))
+        UC33(("UC33\nXu ly phuc khao"))
+        UC34(("UC34\nQuan ly phong van"))
+        UC35(("UC35\nQuan ly hoa don"))
+        UC36(("UC36\nQuan ly banner,\ntin tuc, cau hinh"))
+    end
+
+    Admin --> UC04
+    Admin --> UC05
+    Admin --> UC22
+    Admin --> UC23
+    Admin --> UC24
+    Admin --> UC25
+    Admin --> UC26
+    Admin --> UC27
+    Admin --> UC28
+    Admin --> UC29
+    Admin --> UC30
+    Admin --> UC31
+    Admin --> UC32
+    Admin --> UC33
+    Admin --> UC34
+    Admin --> UC35
+    Admin --> UC36
+
+    UC26 -. include .-> UC27
+    UC27 -. include .-> UC28
+    UC28 -. include .-> UC29
+    UC29 -. cap nhat ket qua .-> Student
+    UC32 -. gui thong bao .-> Student
+    UC33 -. thong bao ket qua .-> Student
+    UC34 -. moi phong van .-> Student
+    UC35 -. cap nhat hoa don .-> Student
+    Email --> UC32
+
+    classDef actor fill:#fff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#eef6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a;
+    class Admin,Student,Email actor;
+    class UC04,UC05,UC22,UC23,UC24,UC25,UC26,UC27,UC28,UC29,UC30,UC31,UC32,UC33,UC34,UC35,UC36 usecase;

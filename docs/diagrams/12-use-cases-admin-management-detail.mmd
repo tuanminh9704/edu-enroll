@@ -1,0 +1,99 @@
+flowchart LR
+    Admin(["Admin / Super Admin"])
+    Student(["Hoc vien"])
+
+    subgraph UsersEnrollments["Nguoi dung va ho so"]
+        UC241(("UC24.1\nXem/tim kiem\nnguoi dung"))
+        UC242(("UC24.2\nKhoa/mo khoa\ntai khoan"))
+        UC243(("UC24.3\nDoi role\nnguoi dung"))
+        UC251(("UC25.1\nXem/loc/tim kiem\nho so"))
+        UC252(("UC25.2\nCap nhat\ntrang thai ho so"))
+        UC253(("UC25.3\nXem lich su\nchinh sua ho so"))
+    end
+
+    subgraph ProgramsImportExport["Chuong trinh va CSV"]
+        UC301(("UC30.1\nXem chuong trinh"))
+        UC302(("UC30.2\nTao chuong trinh"))
+        UC303(("UC30.3\nCap nhat\nchuong trinh"))
+        UC304(("UC30.4\nXoa mem\nchuong trinh"))
+        UC311(("UC31.1\nExport ho so"))
+        UC312(("UC31.2\nExport nguoi dung"))
+        UC313(("UC31.3\nExport chuong trinh"))
+        UC314(("UC31.4\nExport lich thi"))
+        UC315(("UC31.5\nExport diem thi"))
+        UC316(("UC31.6\nImport nguoi dung"))
+        UC317(("UC31.7\nImport chuong trinh"))
+        UC318(("UC31.8\nImport lich thi"))
+        UC319(("UC31.9\nImport diem thi"))
+    end
+
+    subgraph StudentOps["Phuc khao, phong van, hoa don"]
+        UC331(("UC33.1\nXem yeu cau\nphuc khao"))
+        UC332(("UC33.2\nCap nhat ket qua\nphuc khao"))
+        UC341(("UC34.1\nXem danh sach\nphong van"))
+        UC342(("UC34.2\nTao lich\nphong van"))
+        UC343(("UC34.3\nCap nhat trang thai\nphong van"))
+        UC351(("UC35.1\nXem danh sach\nhoa don"))
+        UC352(("UC35.2\nCap nhat trang thai\nhoa don"))
+    end
+
+    subgraph ContentConfig["Noi dung va cau hinh"]
+        UC361(("UC36.1\nXem banner"))
+        UC362(("UC36.2\nTao banner"))
+        UC363(("UC36.3\nCap nhat banner"))
+        UC364(("UC36.4\nXoa/an banner"))
+        UC365(("UC36.5\nXem tin tuc"))
+        UC366(("UC36.6\nTao tin tuc"))
+        UC367(("UC36.7\nCap nhat tin tuc"))
+        UC368(("UC36.8\nLuu tru/xoa tin tuc"))
+        UC369(("UC36.9\nXem cau hinh"))
+        UC3610(("UC36.10\nTao/cap nhat\ncau hinh"))
+    end
+
+    Admin --> UC241
+    Admin --> UC242
+    Admin --> UC243
+    Admin --> UC251
+    Admin --> UC252
+    Admin --> UC253
+    Admin --> UC301
+    Admin --> UC302
+    Admin --> UC303
+    Admin --> UC304
+    Admin --> UC311
+    Admin --> UC312
+    Admin --> UC313
+    Admin --> UC314
+    Admin --> UC315
+    Admin --> UC316
+    Admin --> UC317
+    Admin --> UC318
+    Admin --> UC319
+    Admin --> UC331
+    Admin --> UC332
+    Admin --> UC341
+    Admin --> UC342
+    Admin --> UC343
+    Admin --> UC351
+    Admin --> UC352
+    Admin --> UC361
+    Admin --> UC362
+    Admin --> UC363
+    Admin --> UC364
+    Admin --> UC365
+    Admin --> UC366
+    Admin --> UC367
+    Admin --> UC368
+    Admin --> UC369
+    Admin --> UC3610
+
+    UC252 -. thong bao .-> Student
+    UC332 -. thong bao .-> Student
+    UC342 -. moi phong van .-> Student
+    UC343 -. thong bao .-> Student
+    UC352 -. cap nhat hoa don .-> Student
+
+    classDef actor fill:#fff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#eef6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a;
+    class Admin,Student actor;
+    class UC241,UC242,UC243,UC251,UC252,UC253,UC301,UC302,UC303,UC304,UC311,UC312,UC313,UC314,UC315,UC316,UC317,UC318,UC319,UC331,UC332,UC341,UC342,UC343,UC351,UC352,UC361,UC362,UC363,UC364,UC365,UC366,UC367,UC368,UC369,UC3610 usecase;

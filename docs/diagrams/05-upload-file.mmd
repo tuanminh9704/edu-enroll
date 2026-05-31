@@ -1,0 +1,15 @@
+﻿sequenceDiagram
+    autonumber
+    actor User as Hoc vien/Admin
+    participant App as React App
+    participant Upload as Upload API
+    participant Cloud as Cloudinary
+    participant DB as MongoDB
+
+    User->>App: Chon file can upload
+    App->>Upload: POST /api/uploads/cloudinary multipart/form-data
+    Upload->>Upload: authenticate + multer memory storage + file size limit
+    Upload->>Cloud: uploadToCloudinary(file)
+    Cloud-->>Upload: secure_url, public_id
+    Upload-->>App: URL file
+    App->>Upload: Luu URL vao payload cua nghiep vu lien quan neu form co truong file

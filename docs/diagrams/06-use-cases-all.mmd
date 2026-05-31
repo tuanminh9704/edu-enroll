@@ -1,0 +1,127 @@
+flowchart LR
+    Visitor(["Khach truy cap"])
+    Student(["Hoc vien / Phu huynh"])
+    Admin(["Admin / Super Admin"])
+    VNPay(["VNPay"])
+    Email(["Email Service"])
+    Cloudinary(["Cloudinary"])
+
+    subgraph System["He thong tuyen sinh Edu Enroll"]
+        subgraph Public["Public site"]
+            UC01(("UC01\nXem trang chu,\nbanner, tin tuc"))
+        end
+
+        subgraph Auth["Tai khoan va bao mat"]
+            UC02(("UC02\nDang ky tai khoan"))
+            UC03(("UC03\nXac thuc OTP"))
+            UC04(("UC04\nDang nhap"))
+            UC05(("UC05\nDang xuat /\nrefresh token"))
+            UC06(("UC06\nQuen / doi mat khau\nbang OTP"))
+            UC07(("UC07\nXem / cap nhat\nthong tin ca nhan"))
+        end
+
+        subgraph Enrollment["Quy trinh ho so tuyen sinh"]
+            UC08(("UC08\nKhoi tao / xem\nho so tuyen sinh"))
+            UC09(("UC09\nKy cam ket /\nchinh sach"))
+            UC10(("UC10\nThanh toan\nle phi ho so"))
+            UC11(("UC11\nDien ho so\ntuyen sinh"))
+            UC12(("UC12\nUpload file"))
+            UC13(("UC13\nDang ky lich\nkiem tra dau vao"))
+            UC14(("UC14\nBo qua thi neu\nlevel co ban"))
+            UC15(("UC15\nXem ket qua thi"))
+            UC16(("UC16\nChuyen sang buoc\nchon chuong trinh"))
+            UC17(("UC17\nChon chuong trinh\ndao tao"))
+            UC18(("UC18\nNop ho so goc /\ndat lich hen"))
+            UC19(("UC19\nGui va xem\nphuc khao"))
+            UC20(("UC20\nXem / xac nhan\nphong van"))
+            UC21(("UC21\nXem hoa don"))
+            UC22(("UC22\nXem va danh dau\nthong bao"))
+        end
+
+        subgraph AdminModule["Quan tri he thong"]
+            UC23(("UC23\nXem dashboard\nthong ke"))
+            UC24(("UC24\nQuan ly\nnguoi dung"))
+            UC25(("UC25\nQuan ly ho so\ntuyen sinh"))
+            UC26(("UC26\nQuan ly lich thi /\nphong thi"))
+            UC27(("UC27\nXep hoc vien\nvao ky thi"))
+            UC28(("UC28\nDanh so tui /\nma phach"))
+            UC29(("UC29\nNhap / dong bo\ndiem thi"))
+            UC30(("UC30\nQuan ly chuong trinh\ndao tao"))
+            UC31(("UC31\nImport / export CSV"))
+            UC32(("UC32\nGui thong bao\nhang loat"))
+            UC33(("UC33\nXu ly phuc khao"))
+            UC34(("UC34\nQuan ly phong van"))
+            UC35(("UC35\nQuan ly hoa don"))
+            UC36(("UC36\nQuan ly banner,\ntin tuc, cau hinh"))
+        end
+    end
+
+    Visitor --> UC01
+
+    Student --> UC02
+    Student --> UC03
+    Student --> UC04
+    Student --> UC05
+    Student --> UC06
+    Student --> UC07
+    Student --> UC08
+    Student --> UC09
+    Student --> UC10
+    Student --> UC11
+    Student --> UC12
+    Student --> UC13
+    Student --> UC14
+    Student --> UC15
+    Student --> UC16
+    Student --> UC17
+    Student --> UC18
+    Student --> UC19
+    Student --> UC20
+    Student --> UC21
+    Student --> UC22
+
+    Admin --> UC04
+    Admin --> UC05
+    Admin --> UC22
+    Admin --> UC23
+    Admin --> UC24
+    Admin --> UC25
+    Admin --> UC26
+    Admin --> UC27
+    Admin --> UC28
+    Admin --> UC29
+    Admin --> UC30
+    Admin --> UC31
+    Admin --> UC32
+    Admin --> UC33
+    Admin --> UC34
+    Admin --> UC35
+    Admin --> UC36
+
+    VNPay --> UC10
+    Email --> UC02
+    Email --> UC03
+    Email --> UC06
+    Email --> UC22
+    Email --> UC32
+    Cloudinary --> UC12
+
+    UC02 -. include .-> UC03
+    UC10 -. include .-> VNPay
+    UC11 -. include .-> UC12
+    UC13 -. extend .-> UC15
+    UC14 -. alternative .-> UC13
+    UC15 -. include .-> UC16
+    UC16 -. include .-> UC17
+    UC17 -. include .-> UC18
+    UC26 -. include .-> UC27
+    UC27 -. include .-> UC28
+    UC28 -. include .-> UC29
+    UC29 -. notify .-> UC22
+    UC32 -. notify .-> UC22
+
+    classDef actor fill:#fff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#eef6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a;
+    classDef boundary fill:#f8fafc,stroke:#94a3b8,stroke-width:1px,color:#0f172a;
+    class Visitor,Student,Admin,VNPay,Email,Cloudinary actor;
+    class UC01,UC02,UC03,UC04,UC05,UC06,UC07,UC08,UC09,UC10,UC11,UC12,UC13,UC14,UC15,UC16,UC17,UC18,UC19,UC20,UC21,UC22,UC23,UC24,UC25,UC26,UC27,UC28,UC29,UC30,UC31,UC32,UC33,UC34,UC35,UC36 usecase;

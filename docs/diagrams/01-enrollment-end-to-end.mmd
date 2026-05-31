@@ -1,0 +1,119 @@
+﻿sequenceDiagram
+    autonumber
+    actor Student as Hoc vien/Phu huynh
+    actor AdminUser as Admin
+    participant App as React App
+    participant Auth as Auth API
+    participant Enroll as Enrollment API
+    participant Pay as Payment API
+    participant VNPay as VNPay
+    participant Admin as Admin API
+    participant Notify as Notification Service
+    participant Mail as Email Service
+    participant DB as MongoDB
+
+    Student->>App: Dang ky tai khoan
+    App->>Auth: POST /api/auth/register
+    Auth->>DB: Tao/Cap nhat User inactive + OtpCode
+    Auth-->>Mail: Gui OTP dang ky
+    Auth-->>App: Dang ky thanh cong
+
+    Student->>App: Nhap OTP
+    App->>Auth: POST /api/auth/verify-otp
+    Auth->>DB: Danh dau OTP da dung + active User
+    Auth-->>App: Xac thuc thanh cong
+
+    Student->>App: Dang nhap
+    App->>Auth: POST /api/auth/login
+    Auth->>DB: Kiem tra user/password, luu RefreshToken
+    Auth-->>App: accessToken + refreshToken + role
+
+    Student->>App: Mo Ho so tuyen sinh
+    App->>Enroll: GET /api/enrollments
+    Enroll->>DB: Tim ho so hoac tao EnrollmentForm step_1
+    Enroll->>DB: Tao EnrollmentLog INIT
+    Enroll-->>App: Ho so hien tai
+
+    Student->>App: Ky cam ket
+    App->>Enroll: POST /api/enrollments/sign-policy
+    Enroll->>DB: Luu chu ky, signed_at, signed_ip, step_2
+    Enroll->>DB: Ghi EnrollmentLog SIGN_POLICY
+    Enroll->>Notify: Tao thong bao cho hoc vien
+    Notify-->>Mail: Gui email neu link /ho-so
+    Enroll-->>App: Hoan thanh step 1
+
+    Student->>App: Bam thanh toan le phi
+    App->>Enroll: GET /api/enrollments/payment-url
+    Enroll-->>App: /api/payments/vnpay?enrollmentId=...
+    App->>Pay: Redirect GET /api/payments/vnpay
+    Pay->>DB: Kiem tra EnrollmentForm
+    Pay-->>VNPay: Redirect URL co secure hash
+    Student->>VNPay: Thanh toan
+    VNPay-->>Pay: GET /api/payments/callback
+    Pay->>Pay: Verify secure hash + status + transaction
+    Pay->>Enroll: handlePaymentCallback(success)
+    Enroll->>DB: Cap nhat payment_status success, step_3
+    Enroll->>DB: Tao Payment va Invoice
+    Enroll->>DB: Ghi EnrollmentLog PAYMENT_SUCCESS
+    Enroll->>Notify: Bao hoc vien + admin
+    Notify-->>Mail: Gui email hoc vien
+    Pay-->>App: Redirect /tuyen-sinh?payment=success
+
+    Student->>App: Dien thong tin ho so
+    App->>Enroll: POST /api/enrollments/form
+    Enroll->>DB: Luu thong tin hoc vien/phu huynh/ngon ngu/level
+    Enroll->>Enroll: Xac dinh exam_required theo level
+    Enroll->>DB: Cap nhat step_4 + log FORM_SUBMITTED
+    Enroll->>Notify: Bao hoc vien + admin
+    Enroll-->>App: Ho so da luu
+
+    alt Level co ban, khong can thi
+        Student->>App: Bo qua kiem tra
+        App->>Enroll: POST /api/enrollments/exam/skip
+        Enroll->>DB: Cap nhat step_5
+        Enroll->>Notify: Bao duoc chon chuong trinh
+    else Level cao, can thi
+        Student->>App: Chon lich kiem tra
+        App->>Enroll: GET /api/enrollments/exam-schedules
+        Enroll-->>App: Danh sach ngay thi
+        App->>Enroll: POST /api/enrollments/exam/register
+        Enroll->>DB: Tao/Cap nhat ExamRegistration
+        Enroll->>DB: Tang registered_slots
+        Enroll->>Notify: Bao hoc vien + admin
+
+        AdminUser->>App: Quan ly ky thi/phong thi
+        App->>Admin: Tao lich thi, phong thi, xep phong, cong bo
+        Admin->>DB: Cap nhat ExamSchedule, ExamRoom, ExamRegistration
+        Admin->>Notify: Gui thong bao lich/phong thi
+
+        AdminUser->>App: Nhap diem thi
+        App->>Admin: POST /api/admin/exam-registrations/:id/score
+        Admin->>DB: Tao/Cap nhat ExamScore
+        Admin->>DB: Dong bo diem, level, pass_status vao EnrollmentForm
+        Admin->>DB: Ghi EnrollmentLog EXAM_SCORE_ENTERED
+        Admin->>Notify: Bao ket qua cho hoc vien
+
+        Student->>App: Xem ket qua
+        App->>Enroll: GET /api/enrollments/exam/result
+        Enroll->>DB: Lay ExamRegistration + ExamScore + phong thi
+        Enroll-->>App: Ket qua thi
+        Student->>App: Tiep tuc chon chuong trinh
+        App->>Enroll: POST /api/enrollments/exam/advance
+        Enroll->>DB: Cap nhat step_5 neu dat
+    end
+
+    Student->>App: Chon chuong trinh dao tao
+    App->>Enroll: GET /api/enrollments/programs
+    Enroll->>DB: Loc TrainingProgram theo ngon ngu/level/diem
+    Enroll-->>App: Danh sach phu hop
+    App->>Enroll: POST /api/enrollments/program/select
+    Enroll->>DB: Luu program_id, program_name, tuition_fee, step_6
+    Enroll->>Notify: Bao hoc vien + admin
+
+    Student->>App: Nop ho so goc/dat lich hen
+    App->>Enroll: POST /api/enrollments/original-docs
+    Enroll->>DB: Atomic increment Counter doc_number
+    Enroll->>DB: Luu appointment_date, buy_books, document_number, completed
+    Enroll->>DB: Ghi EnrollmentLog DOCS_SUBMITTED
+    Enroll->>Notify: Bao ho so hoan tat
+    Enroll-->>App: Ma ho so

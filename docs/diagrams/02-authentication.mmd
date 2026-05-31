@@ -1,0 +1,40 @@
+﻿sequenceDiagram
+    autonumber
+    actor User as Hoc vien/Admin
+    participant App as React App
+    participant Auth as Auth Controller/Service
+    participant Mail as Email Service
+    participant DB as MongoDB
+
+    User->>App: Dang ky email/password/phone/full_name
+    App->>Auth: POST /api/auth/register
+    Auth->>DB: Kiem tra email
+    Auth->>DB: Hash password, tao/cap nhat User inactive
+    Auth->>DB: Vo hieu OTP cu, tao OTP moi
+    Auth-->>Mail: Gui OTP nen
+    Auth-->>App: 201 Created
+
+    User->>App: Nhap OTP
+    App->>Auth: POST /api/auth/verify-otp
+    Auth->>DB: Tim OTP chua dung, chua het han
+    Auth->>DB: Mark OTP used
+    Auth->>DB: Active user neu type register
+    Auth-->>App: OK
+
+    User->>App: Dang nhap
+    App->>Auth: POST /api/auth/login
+    Auth->>DB: Tim active user
+    Auth->>Auth: So sanh bcrypt password
+    Auth->>DB: Luu refresh token
+    Auth-->>App: User + accessToken + refreshToken
+
+    opt Quen mat khau
+        User->>App: Nhap email
+        App->>Auth: POST /api/auth/forgot-password
+        Auth->>DB: Tao OTP forgot_password
+        Auth-->>Mail: Gui OTP
+        User->>App: Nhap OTP + mat khau moi
+        App->>Auth: POST /api/auth/reset-password
+        Auth->>DB: Xac thuc OTP, cap nhat password_hash
+        Auth->>DB: Xoa refresh token cu
+    end

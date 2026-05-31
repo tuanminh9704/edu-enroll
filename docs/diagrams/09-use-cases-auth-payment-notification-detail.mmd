@@ -1,0 +1,62 @@
+flowchart LR
+    User(["Hoc vien / Admin"])
+    VNPay(["VNPay"])
+    Email(["Email Service"])
+
+    subgraph Auth["Tai khoan va OTP"]
+        UC031(("UC03.1\nNhap OTP\nxac thuc dang ky"))
+        UC032(("UC03.2\nGui lai OTP\ndang ky"))
+        UC051(("UC05.1\nDang xuat"))
+        UC052(("UC05.2\nLam moi\naccess token"))
+        UC061(("UC06.1\nYeu cau OTP\nquen mat khau"))
+        UC062(("UC06.2\nDoi mat khau\nbang OTP"))
+        UC071(("UC07.1\nXem thong tin\nca nhan"))
+        UC072(("UC07.2\nCap nhat\nho ten/SDT"))
+        UC073(("UC07.3\nDoi mat khau\nkhi da dang nhap"))
+    end
+
+    subgraph Payment["Thanh toan le phi ho so"]
+        UC101(("UC10.1\nLay URL\nthanh toan"))
+        UC102(("UC10.2\nTao request VNPay\nva redirect"))
+        UC103(("UC10.3\nNhan callback\nVNPay"))
+        UC104(("UC10.4\nVerify secure hash\nva status"))
+        UC105(("UC10.5\nCap nhat\nPayment/Invoice/Ho so"))
+        UC106(("UC10.6\nThanh toan mock\nkhi test"))
+    end
+
+    subgraph Notify["Thong bao"]
+        UC221(("UC22.1\nXem danh sach\nthong bao"))
+        UC222(("UC22.2\nXem so thong bao\nchua doc"))
+        UC223(("UC22.3\nDanh dau mot\nthong bao da doc"))
+        UC224(("UC22.4\nDanh dau tat ca\nda doc"))
+    end
+
+    User --> UC031
+    User --> UC032
+    User --> UC051
+    User --> UC052
+    User --> UC061
+    User --> UC062
+    User --> UC071
+    User --> UC072
+    User --> UC073
+    User --> UC101
+    User --> UC106
+    User --> UC221
+    User --> UC222
+    User --> UC223
+    User --> UC224
+
+    Email --> UC031
+    Email --> UC032
+    Email --> UC061
+    Email --> UC062
+    Email --> UC221
+
+    UC101 --> UC102 --> VNPay --> UC103 --> UC104 --> UC105
+    UC106 --> UC105
+
+    classDef actor fill:#fff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#eef6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a;
+    class User,VNPay,Email actor;
+    class UC031,UC032,UC051,UC052,UC061,UC062,UC071,UC072,UC073,UC101,UC102,UC103,UC104,UC105,UC106,UC221,UC222,UC223,UC224 usecase;

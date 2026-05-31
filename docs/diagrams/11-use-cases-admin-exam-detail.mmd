@@ -1,0 +1,71 @@
+flowchart LR
+    Admin(["Admin / Super Admin"])
+    Student(["Hoc vien"])
+
+    subgraph ExamSchedule["Lich thi va phong thi"]
+        UC261(("UC26.1\nXem danh sach\nlich thi"))
+        UC262(("UC26.2\nTao lich thi"))
+        UC263(("UC26.3\nDong lich thi"))
+        UC264(("UC26.4\nXem danh sach\nphong thi"))
+        UC265(("UC26.5\nTao phong thi"))
+        UC266(("UC26.6\nXep phong\ntu dong"))
+        UC267(("UC26.7\nCong bo\nphong thi"))
+        UC268(("UC26.8\nXem ho so du\ndieu kien xep thi"))
+    end
+
+    subgraph Assignment["Xep thi va ma phach"]
+        UC271(("UC27.1\nXep mot hoc vien\nvao ky thi"))
+        UC272(("UC27.2\nXep hang loat\ntheo ngay thi"))
+        UC281(("UC28.1\nSinh so tui thi"))
+        UC282(("UC28.2\nSinh ma phach"))
+    end
+
+    subgraph Scores["Diem thi"]
+        UC291(("UC29.1\nXem danh sach\ndang ky thi"))
+        UC292(("UC29.2\nNhap diem\ntruc tiep"))
+        UC293(("UC29.3\nLuu nhap diem tam"))
+        UC294(("UC29.4\nDong bo diem\nmot thi sinh"))
+        UC295(("UC29.5\nNhap va dong bo\ndiem mot thi sinh"))
+        UC296(("UC29.6\nDong bo diem\ntheo ky thi"))
+    end
+
+    Admin --> UC261
+    Admin --> UC262
+    Admin --> UC263
+    Admin --> UC264
+    Admin --> UC265
+    Admin --> UC266
+    Admin --> UC267
+    Admin --> UC268
+    Admin --> UC271
+    Admin --> UC272
+    Admin --> UC281
+    Admin --> UC282
+    Admin --> UC291
+    Admin --> UC292
+    Admin --> UC293
+    Admin --> UC294
+    Admin --> UC295
+    Admin --> UC296
+
+    UC262 --> UC264
+    UC265 --> UC266
+    UC268 --> UC271
+    UC268 --> UC272
+    UC271 --> UC266
+    UC272 --> UC266
+    UC266 --> UC267
+    UC267 -. thong bao lich/phong .-> Student
+    UC266 --> UC281 --> UC282
+    UC282 --> UC291
+    UC291 --> UC293
+    UC291 --> UC295
+    UC293 --> UC294
+    UC292 --> UC294
+    UC295 -. cap nhat ket qua .-> Student
+    UC296 -. cap nhat ket qua .-> Student
+
+    classDef actor fill:#fff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#eef6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a;
+    class Admin,Student actor;
+    class UC261,UC262,UC263,UC264,UC265,UC266,UC267,UC268,UC271,UC272,UC281,UC282,UC291,UC292,UC293,UC294,UC295,UC296 usecase;

@@ -1,0 +1,293 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-container: var(--primary-container);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-success-container: var(--success-container);
+  --color-warning: var(--warning);
+  --color-warning-container: var(--warning-container);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-sans);
+}
+
+:root {
+  --font-sans: Roboto, "Google Sans", "Segoe UI", Arial, sans-serif;
+  --radius: 12px;
+  --background: oklch(0.985 0.006 255);
+  --foreground: oklch(0.22 0.02 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.22 0.02 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.22 0.02 255);
+  --primary: oklch(0.52 0.19 262);
+  --primary-foreground: oklch(1 0 0);
+  --primary-container: oklch(0.91 0.06 262);
+  --on-primary-container: oklch(0.25 0.1 262);
+  --secondary: oklch(0.94 0.02 255);
+  --secondary-foreground: oklch(0.28 0.03 255);
+  --muted: oklch(0.95 0.01 255);
+  --muted-foreground: oklch(0.47 0.02 255);
+  --accent: oklch(0.93 0.04 200);
+  --accent-foreground: oklch(0.23 0.05 220);
+  --destructive: oklch(0.58 0.21 27);
+  --border: oklch(0.89 0.015 255);
+  --input: oklch(0.87 0.018 255);
+  --ring: oklch(0.62 0.16 262);
+  --success: oklch(0.43 0.13 155);
+  --success-container: oklch(0.91 0.08 155);
+  --warning: oklch(0.53 0.13 70);
+  --warning-container: oklch(0.94 0.1 85);
+  --surface-container: oklch(0.965 0.008 255);
+  --surface-container-high: oklch(0.94 0.012 255);
+  --elevation-1: 0 1px 2px rgb(15 23 42 / 0.06), 0 1px 3px rgb(15 23 42 / 0.08);
+  --elevation-2: 0 2px 6px rgb(15 23 42 / 0.08), 0 8px 24px rgb(15 23 42 / 0.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(circle at top left, color-mix(in oklch, var(--primary-container) 32%, transparent), transparent 34rem),
+    var(--background);
+  color: var(--foreground);
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: color-mix(in oklch, var(--primary) 22%, transparent);
+}
+
+.material-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.material-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.material-title {
+  color: var(--foreground);
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.material-subtitle {
+  color: var(--muted-foreground);
+  margin-top: 6px;
+}
+
+.material-card,
+.ant-card {
+  border: 1px solid var(--border) !important;
+  border-radius: 24px !important;
+  background: var(--card) !important;
+  box-shadow: var(--elevation-1) !important;
+}
+
+.material-card-elevated {
+  box-shadow: var(--elevation-2) !important;
+}
+
+.ant-card-body {
+  padding: 20px !important;
+}
+
+.ant-btn {
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+}
+
+.ant-btn-primary {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+.ant-btn-default:not(.ant-btn-dangerous) {
+  border-color: var(--border) !important;
+  color: var(--foreground) !important;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker,
+.ant-input-number,
+.ant-input-number-input,
+.ant-input-number-group-addon {
+  border-radius: 12px !important;
+}
+
+.ant-input,
+.ant-input-affix-wrapper,
+.ant-select-selector,
+.ant-picker,
+.ant-input-number {
+  border-color: var(--input) !important;
+  background: var(--card) !important;
+}
+
+.ant-input:focus,
+.ant-input-affix-wrapper-focused,
+.ant-select-focused .ant-select-selector,
+.ant-picker-focused,
+.ant-input-number-focused {
+  border-color: var(--ring) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--ring) 18%, transparent) !important;
+}
+
+.ant-table-wrapper {
+  overflow: hidden;
+}
+
+.ant-table {
+  color: var(--foreground) !important;
+  background: var(--card) !important;
+}
+
+.ant-table-thead > tr > th {
+  background: var(--surface-container) !important;
+  color: var(--muted-foreground) !important;
+  font-size: 12px;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom-color: var(--border) !important;
+}
+
+.ant-table-tbody > tr:hover > td {
+  background: color-mix(in oklch, var(--primary-container) 26%, white) !important;
+}
+
+.ant-tag {
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  padding: 2px 9px !important;
+}
+
+.ant-modal-content {
+  border-radius: 28px !important;
+  padding: 24px !important;
+  box-shadow: var(--elevation-2) !important;
+}
+
+.ant-modal-header {
+  margin-bottom: 16px !important;
+}
+
+.ant-modal-title {
+  color: var(--foreground) !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+}
+
+.ant-layout,
+.ant-layout-content {
+  background: transparent !important;
+}
+
+.ant-menu {
+  border: 0 !important;
+  color: var(--muted-foreground) !important;
+}
+
+.ant-menu-item {
+  border-radius: 999px !important;
+  margin-inline: 10px !important;
+  width: calc(100% - 20px) !important;
+}
+
+.ant-menu-item-selected {
+  background: var(--primary-container) !important;
+  color: var(--on-primary-container) !important;
+  font-weight: 700 !important;
+}
+
+.ant-alert {
+  border-radius: 18px !important;
+}
+
+.ant-steps .ant-steps-item-icon {
+  border-color: var(--primary) !important;
+}
+
+.ant-steps .ant-steps-item-process .ant-steps-item-icon {
+  background: var(--primary) !important;
+}
+
+@media (max-width: 768px) {
+  .material-page-header {
+    flex-direction: column;
+  }
+
+  .ant-card-body {
+    padding: 16px !important;
+  }
+
+  .ant-modal-content {
+    border-radius: 20px !important;
+    padding: 18px !important;
+  }
+}

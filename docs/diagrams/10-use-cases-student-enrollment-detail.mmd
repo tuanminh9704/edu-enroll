@@ -1,0 +1,59 @@
+flowchart LR
+    Student(["Hoc vien / Phu huynh"])
+    System(["He thong"])
+    Cloudinary(["Cloudinary"])
+
+    subgraph Form["Dien ho so tuyen sinh"]
+        UC111(("UC11.1\nNhap thong tin\nhoc vien"))
+        UC112(("UC11.2\nNhap thong tin\nphu huynh"))
+        UC113(("UC11.3\nChon ngon ngu,\nlevel, ca hoc, co so"))
+        UC114(("UC11.4\nXac dinh co can\nthi dau vao"))
+        UC12(("UC12\nUpload file"))
+    end
+
+    subgraph Exam["Dang ky va xem ket qua kiem tra"]
+        UC131(("UC13.1\nXem danh sach\nngay/lich thi"))
+        UC132(("UC13.2\nDang ky\nlich thi"))
+        UC133(("UC13.3\nDoi lich thi\nkhi chua co diem"))
+        UC151(("UC15.1\nXem diem,\nlevel, pass status"))
+        UC152(("UC15.2\nXem phong thi,\nso bao danh"))
+    end
+
+    subgraph OriginalDocs["Nop ho so goc"]
+        UC181(("UC18.1\nChon ngay hen\nnop ho so goc"))
+        UC182(("UC18.2\nChon mua sach\nva ghi chu"))
+        UC183(("UC18.3\nSinh ma ho so\nbang Counter"))
+    end
+
+    Student --> UC111
+    Student --> UC112
+    Student --> UC113
+    Student --> UC12
+    Student --> UC131
+    Student --> UC132
+    Student --> UC133
+    Student --> UC151
+    Student --> UC152
+    Student --> UC181
+    Student --> UC182
+
+    System --> UC114
+    System --> UC183
+    Cloudinary --> UC12
+
+    UC111 --> UC114
+    UC112 --> UC114
+    UC113 --> UC114
+    UC12 -. include .-> UC111
+    UC114 --> UC131
+    UC131 --> UC132
+    UC132 --> UC151
+    UC133 --> UC151
+    UC151 --> UC152
+    UC181 --> UC183
+    UC182 --> UC183
+
+    classDef actor fill:#fff,stroke:#111827,stroke-width:2px,color:#111827;
+    classDef usecase fill:#eef6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a;
+    class Student,System,Cloudinary actor;
+    class UC111,UC112,UC113,UC114,UC12,UC131,UC132,UC133,UC151,UC152,UC181,UC182,UC183 usecase;
