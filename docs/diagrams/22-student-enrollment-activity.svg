@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1620" viewBox="0 0 1200 1620" role="img">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #111827; }
+      .title { font-size: 28px; font-weight: 700; }
+      .subtitle { font-size: 15px; fill: #475569; }
+      .node { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; }
+      .decision { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; }
+      .error { fill: #fef2f2; stroke: #dc2626; stroke-width: 2; }
+      .terminal { fill: #111827; stroke: #111827; stroke-width: 2; }
+      .terminalText { fill: #fff; font-size: 14px; font-weight: 700; }
+      .label { font-size: 14px; font-weight: 600; }
+      .branchText { font-size: 13px; fill: #334155; font-weight: 700; }
+      .edge { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1200" height="1620" fill="#ffffff"/>
+  <text x="600" y="45" text-anchor="middle" class="title">Activity Diagram - Lap va hoan tat ho so tuyen sinh</text>
+  <text x="600" y="72" text-anchor="middle" class="subtitle">UC04 - UC08 - Chinh sach, thanh toan, thi dau vao, chuong trinh va ho so goc</text>
+  <path d="M 600 149 L 600 185" class="edge"/>
+
+<path d="M 600 253 L 600 295" class="edge"/>
+
+<path d="M 600 405 L 600 445" class="edge"/>
+<text x="614" y="437" class="branchText">Khong</text>
+<path d="M 715 350 L 725 579" class="edge"/>
+<text x="739" y="571" class="branchText">Co</text>
+<path d="M 600 513 L 600 545" class="edge"/>
+
+<path d="M 600 613 L 600 650" class="edge"/>
+
+<path d="M 715 705 L 900 839" class="edge"/>
+<text x="914" y="831" class="branchText">Khong</text>
+<path d="M 600 760 L 600 805" class="edge"/>
+<text x="614" y="797" class="branchText">Co</text>
+<path d="M 600 873 L 600 910" class="edge"/>
+
+<path d="M 715 965 L 900 839" class="edge"/>
+<text x="914" y="831" class="branchText">Khong</text>
+<path d="M 600 1020 L 600 1065" class="edge"/>
+<text x="614" y="1057" class="branchText">Co</text>
+<path d="M 600 1133 L 600 1170" class="edge"/>
+
+<path d="M 715 1225 L 1150 839" class="edge"/>
+<text x="1164" y="831" class="branchText">Khong</text>
+<path d="M 600 1280 L 600 1325" class="edge"/>
+<text x="614" y="1317" class="branchText">Co</text>
+<path d="M 485 1380 L 285 1475" class="edge"/>
+<text x="299" y="1467" class="branchText">Co</text>
+<path d="M 285 1543 L 285 1580" class="edge"/>
+
+<path d="M 400 1635 L 900 839" class="edge"/>
+<text x="914" y="831" class="branchText">Khong</text>
+<path d="M 400 1635 L 790 1509" class="edge"/>
+<text x="804" y="1501" class="branchText">Co</text>
+<path d="M 715 1380 L 915 1475" class="edge"/>
+<text x="929" y="1467" class="branchText">Khong</text>
+<path d="M 915 1543 L 915 1580" class="edge"/>
+
+<path d="M 915 1648 L 675 1767" class="edge"/>
+
+<path d="M 1025 873 L 675 1767" class="edge"/>
+
+  <rect x="525" y="105" width="150" height="44" rx="22" class="terminal"/>
+<text x="600" y="132" text-anchor="middle" class="terminalText">Bat dau</text>
+<rect x="475" y="185" width="250" height="68" rx="10" class="node"/>
+<text x="600" y="215" text-anchor="middle" class="label">Nguoi dung dang nhap va</text>
+<text x="600" y="233" text-anchor="middle" class="label">mo ho so tuyen sinh</text>
+<path d="M 600 295 L 715 350 L 600 405 L 485 350 Z" class="decision"/>
+<text x="600" y="355" text-anchor="middle" class="label">Da co ho so?</text>
+<rect x="475" y="445" width="250" height="68" rx="10" class="node"/>
+<text x="600" y="475" text-anchor="middle" class="label">Khoi tao ho so moi neu</text>
+<text x="600" y="493" text-anchor="middle" class="label">chua co</text>
+<rect x="475" y="545" width="250" height="68" rx="10" class="node"/>
+<text x="600" y="584" text-anchor="middle" class="label">Ky chinh sach tuyen sinh</text>
+<path d="M 600 650 L 715 705 L 600 760 L 485 705 Z" class="decision"/>
+<text x="600" y="710" text-anchor="middle" class="label">Da ky chinh sach?</text>
+<rect x="475" y="805" width="250" height="68" rx="10" class="node"/>
+<text x="600" y="835" text-anchor="middle" class="label">Thanh toan le phi qua</text>
+<text x="600" y="853" text-anchor="middle" class="label">VNPay</text>
+<path d="M 600 910 L 715 965 L 600 1020 L 485 965 Z" class="decision"/>
+<text x="600" y="970" text-anchor="middle" class="label">Thanh toan thanh cong?</text>
+<rect x="475" y="1065" width="250" height="68" rx="10" class="node"/>
+<text x="600" y="1095" text-anchor="middle" class="label">Nhap thong tin tuyen</text>
+<text x="600" y="1113" text-anchor="middle" class="label">sinh</text>
+<path d="M 600 1170 L 715 1225 L 600 1280 L 485 1225 Z" class="decision"/>
+<text x="600" y="1230" text-anchor="middle" class="label">Thong tin hop le?</text>
+<path d="M 600 1325 L 715 1380 L 600 1435 L 485 1380 Z" class="decision"/>
+<text x="600" y="1385" text-anchor="middle" class="label">Can thi dau vao?</text>
+<rect x="160" y="1475" width="250" height="68" rx="10" class="node"/>
+<text x="285" y="1505" text-anchor="middle" class="label">Dang ky lich thi va cho</text>
+<text x="285" y="1523" text-anchor="middle" class="label">dong bo diem</text>
+<path d="M 285 1580 L 400 1635 L 285 1690 L 170 1635 Z" class="decision"/>
+<text x="285" y="1640" text-anchor="middle" class="label">Ket qua dat?</text>
+<rect x="790" y="1475" width="250" height="68" rx="10" class="node"/>
+<text x="915" y="1514" text-anchor="middle" class="label">Chon chuong trinh hoc</text>
+<rect x="790" y="1580" width="250" height="68" rx="10" class="node"/>
+<text x="915" y="1610" text-anchor="middle" class="label">Dat lich nop ho so goc</text>
+<text x="915" y="1628" text-anchor="middle" class="label">va sinh ma ho so</text>
+<rect x="900" y="805" width="250" height="68" rx="10" class="error"/>
+<text x="1025" y="844" text-anchor="middle" class="label">Hien thi thong bao loi</text>
+<rect x="525" y="1745" width="150" height="44" rx="22" class="terminal"/>
+<text x="600" y="1772" text-anchor="middle" class="terminalText">Ket thuc</text>
+</svg>

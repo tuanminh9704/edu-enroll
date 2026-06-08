@@ -18,6 +18,7 @@ import AdminUsers from './pages/Admin/Users';
 import AdminExamSchedules from './pages/Admin/ExamSchedules';
 import AdminExamScores from './pages/Admin/ExamScores';
 import AdminPrograms from './pages/Admin/Programs';
+import AdminClasses from './pages/Admin/Classes';
 import AdminBroadcast from './pages/Admin/Broadcast';
 import AdminRechecks from './pages/Admin/Rechecks';
 import AdminInterviews from './pages/Admin/Interviews';
@@ -81,6 +82,7 @@ export default function App() {
           <Route path="/quan-tri/phong-van" element={<AdminInterviews />} />
           <Route path="/quan-tri/hoa-don" element={<AdminInvoices />} />
           <Route path="/quan-tri/chuong-trinh" element={<AdminPrograms />} />
+          <Route path="/quan-tri/lop-hoc" element={<AdminClasses />} />
           <Route path="/quan-tri/thong-bao" element={<AdminBroadcast />} />
           <Route path="/quan-tri/noi-dung" element={<AdminContent />} />
         </Route>

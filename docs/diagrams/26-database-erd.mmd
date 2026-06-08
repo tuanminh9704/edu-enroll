@@ -1,0 +1,234 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+erDiagram
+    USER {
+        ObjectId _id PK
+        string email UK
+        string password_hash
+        string phone
+        string full_name
+        string preferred_language
+        string role
+        boolean is_active
+        date created_at
+        date updated_at
+    }
+
+    ENROLLMENT_FORM {
+        ObjectId _id PK
+        ObjectId user_id FK
+        number current_step
+        string status
+        boolean signed_policy
+        string payment_status
+        number payment_amount
+        string student_full_name
+        string parent_full_name
+        boolean exam_required
+        ObjectId exam_schedule_id FK
+        ObjectId program_id FK
+        string document_number
+        boolean documents_submitted
+        boolean is_deleted
+    }
+
+    TRAINING_PROGRAM {
+        ObjectId _id PK
+        string language
+        string name
+        string level
+        string level_code
+        number tuition_fee
+        number min_score
+        boolean is_active
+    }
+
+    PAYMENT {
+        ObjectId _id PK
+        ObjectId user_id FK
+        ObjectId enrollment_id FK
+        number amount
+        string status
+        string vnpay_ref
+        date created_at
+    }
+
+    INVOICE {
+        ObjectId _id PK
+        ObjectId user_id FK
+        ObjectId enrollment_id FK
+        ObjectId payment_id FK
+        string invoice_number UK
+        number amount
+        string status
+        date issued_at
+        date paid_at
+    }
+
+    EXAM_SCHEDULE {
+        ObjectId _id PK
+        string title
+        string language
+        date exam_date
+        string location
+        string format
+        number max_slots
+        number registered_slots
+        string status
+        boolean rooms_published
+    }
+
+    EXAM_ROOM {
+        ObjectId _id PK
+        ObjectId schedule_id FK
+        string name
+        string location
+        number capacity
+        number assigned_count
+    }
+
+    EXAM_REGISTRATION {
+        ObjectId _id PK
+        ObjectId user_id FK
+        ObjectId enrollment_id FK
+        ObjectId schedule_id FK
+        ObjectId room_id FK
+        string exam_code UK
+        string bag_number
+        string anonymous_code
+        string status
+    }
+
+    EXAM_SCORE {
+        ObjectId _id PK
+        ObjectId registration_id FK
+        number score
+        string level_passed
+        string pass_status
+        number pass_threshold
+        string status
+    }
+
+    RECHECK_REQUEST {
+        ObjectId _id PK
+        ObjectId user_id FK
+        ObjectId enrollment_id FK
+        ObjectId registration_id FK
+        string reason
+        string status
+        ObjectId resolved_by FK
+        date resolved_at
+    }
+
+    INTERVIEW {
+        ObjectId _id PK
+        ObjectId user_id FK
+        ObjectId enrollment_id FK
+        string title
+        date scheduled_at
+        string location
+        string format
+        string status
+        ObjectId created_by FK
+    }
+
+    NOTIFICATION {
+        ObjectId _id PK
+        ObjectId user_id FK
+        string title
+        string message
+        string type
+        string link
+        boolean is_read
+        date created_at
+    }
+
+    ENROLLMENT_LOG {
+        ObjectId _id PK
+        ObjectId enrollment_id FK
+        ObjectId changed_by FK
+        string action
+        string field_name
+        string old_value
+        string new_value
+        date created_at
+    }
+
+    REFRESH_TOKEN {
+        ObjectId _id PK
+        ObjectId user_id FK
+        string token UK
+        date expires_at
+        date created_at
+    }
+
+    OTP_CODE {
+        ObjectId _id PK
+        string email
+        string otp
+        string type
+        date expires_at
+        boolean is_used
+    }
+
+    BANNER {
+        ObjectId _id PK
+        string title
+        string subtitle
+        string image_url
+        string link_url
+        string position
+        boolean is_active
+        number sort_order
+    }
+
+    NEWS {
+        ObjectId _id PK
+        string title
+        string slug UK
+        string summary
+        string content
+        string category
+        string status
+        date published_at
+    }
+
+    SYSTEM_CONFIG {
+        ObjectId _id PK
+        string key UK
+        string value
+        string group
+        string description
+        ObjectId updated_by FK
+    }
+
+    COUNTER {
+        ObjectId _id PK
+        string counter_key UK
+        number current_value
+    }
+
+    USER ||--o| ENROLLMENT_FORM : owns
+    USER ||--o{ PAYMENT : makes
+    USER ||--o{ INVOICE : receives
+    USER ||--o{ EXAM_REGISTRATION : registers
+    USER ||--o{ RECHECK_REQUEST : requests
+    USER ||--o{ INTERVIEW : attends
+    USER ||--o{ NOTIFICATION : receives
+    USER ||--o{ REFRESH_TOKEN : has
+    USER ||--o{ ENROLLMENT_LOG : changes
+    USER ||--o{ SYSTEM_CONFIG : updates
+
+    ENROLLMENT_FORM ||--o{ PAYMENT : has
+    ENROLLMENT_FORM ||--o{ INVOICE : has
+    ENROLLMENT_FORM ||--o{ EXAM_REGISTRATION : has
+    ENROLLMENT_FORM ||--o{ RECHECK_REQUEST : has
+    ENROLLMENT_FORM ||--o{ INTERVIEW : has
+    ENROLLMENT_FORM ||--o{ ENROLLMENT_LOG : logs
+    TRAINING_PROGRAM ||--o{ ENROLLMENT_FORM : selected_by
+
+    EXAM_SCHEDULE ||--o{ EXAM_ROOM : contains
+    EXAM_SCHEDULE ||--o{ EXAM_REGISTRATION : schedules
+    EXAM_ROOM ||--o{ EXAM_REGISTRATION : assigns
+    EXAM_REGISTRATION ||--o| EXAM_SCORE : receives
+    EXAM_REGISTRATION ||--o{ RECHECK_REQUEST : rechecked_by
+    PAYMENT ||--o| INVOICE : generates

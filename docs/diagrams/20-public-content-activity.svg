@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1180" viewBox="0 0 1180 1180" role="img">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #111827; }
+      .title { font-size: 28px; font-weight: 700; }
+      .subtitle { font-size: 15px; fill: #475569; }
+      .node { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; }
+      .decision { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; }
+      .error { fill: #fef2f2; stroke: #dc2626; stroke-width: 2; }
+      .terminal { fill: #111827; stroke: #111827; stroke-width: 2; }
+      .terminalText { fill: #fff; font-size: 14px; font-weight: 700; }
+      .label { font-size: 14px; font-weight: 600; }
+      .branchText { font-size: 13px; fill: #334155; font-weight: 700; }
+      .edge { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1180" height="1180" fill="#ffffff"/>
+  <text x="590" y="45" text-anchor="middle" class="title">Activity Diagram - Xem noi dung cong khai</text>
+  <text x="590" y="72" text-anchor="middle" class="subtitle">UC01 - Trang chu, banner va tin tuc public</text>
+  <path d="M 590 149 L 590 185" class="edge"/>
+
+<path d="M 590 253 L 590 285" class="edge"/>
+
+<path d="M 590 353 L 590 395" class="edge"/>
+
+<path d="M 705 450 L 840 464" class="edge"/>
+<text x="854" y="456" class="branchText">Co</text>
+<path d="M 590 505 L 590 550" class="edge"/>
+<text x="604" y="542" class="branchText">Khong</text>
+<path d="M 590 618 L 590 655" class="edge"/>
+
+<path d="M 475 710 L 345 815" class="edge"/>
+<text x="359" y="807" class="branchText">Co</text>
+<path d="M 705 710 L 835 815" class="edge"/>
+<text x="849" y="807" class="branchText">Khong</text>
+<path d="M 345 883 L 475 980" class="edge"/>
+
+<path d="M 835 883 L 705 980" class="edge"/>
+
+<path d="M 590 1035 L 590 1125" class="edge"/>
+<text x="604" y="1117" class="branchText">Khong</text>
+<path d="M 590 1035 L 590 1060" class="edge"/>
+<text x="604" y="1052" class="branchText">Co</text>
+<path d="M 590 1128 L 590 1125" class="edge"/>
+<text x="604" y="1117" class="branchText">Tin hop le</text>
+<path d="M 715 1094 L 840 1079" class="edge"/>
+<text x="854" y="1071" class="branchText">Khong hop le</text>
+<path d="M 965 498 L 665 1147" class="edge"/>
+
+<path d="M 965 1113 L 665 1147" class="edge"/>
+
+  <rect x="515" y="105" width="150" height="44" rx="22" class="terminal"/>
+<text x="590" y="132" text-anchor="middle" class="terminalText">Bat dau</text>
+<rect x="465" y="185" width="250" height="68" rx="10" class="node"/>
+<text x="590" y="215" text-anchor="middle" class="label">Nguoi dung truy cap</text>
+<text x="590" y="233" text-anchor="middle" class="label">trang chu</text>
+<rect x="465" y="285" width="250" height="68" rx="10" class="node"/>
+<text x="590" y="315" text-anchor="middle" class="label">Frontend yeu cau banner</text>
+<text x="590" y="333" text-anchor="middle" class="label">va tin tuc cong khai</text>
+<path d="M 590 395 L 705 450 L 590 505 L 475 450 Z" class="decision"/>
+<text x="590" y="455" text-anchor="middle" class="label">API hoac CSDL loi?</text>
+<rect x="465" y="550" width="250" height="68" rx="10" class="node"/>
+<text x="590" y="580" text-anchor="middle" class="label">Truy van banner active</text>
+<text x="590" y="598" text-anchor="middle" class="label">va tin tuc published</text>
+<path d="M 590 655 L 705 710 L 590 765 L 475 710 Z" class="decision"/>
+<text x="590" y="715" text-anchor="middle" class="label">Co du lieu cong khai?</text>
+<rect x="220" y="815" width="250" height="68" rx="10" class="node"/>
+<text x="345" y="845" text-anchor="middle" class="label">Hien thi banner va tin</text>
+<text x="345" y="863" text-anchor="middle" class="label">tuc</text>
+<rect x="710" y="815" width="250" height="68" rx="10" class="node"/>
+<text x="835" y="845" text-anchor="middle" class="label">Hien thi noi dung mac</text>
+<text x="835" y="863" text-anchor="middle" class="label">dinh hoac danh sach rong</text>
+<path d="M 590 925 L 705 980 L 590 1035 L 475 980 Z" class="decision"/>
+<text x="590" y="985" text-anchor="middle" class="label">Mo chi tiet tin tuc?</text>
+<rect x="465" y="1060" width="250" height="68" rx="10" class="node"/>
+<text x="590" y="1090" text-anchor="middle" class="label">Truy van tin tuc theo</text>
+<text x="590" y="1108" text-anchor="middle" class="label">slug</text>
+<rect x="840" y="430" width="250" height="68" rx="10" class="error"/>
+<text x="965" y="469" text-anchor="middle" class="label">Hien thi thong bao loi</text>
+<rect x="840" y="1045" width="250" height="68" rx="10" class="error"/>
+<text x="965" y="1075" text-anchor="middle" class="label">Thong bao tin tuc khong</text>
+<text x="965" y="1093" text-anchor="middle" class="label">ton tai</text>
+<rect x="515" y="1125" width="150" height="44" rx="22" class="terminal"/>
+<text x="590" y="1152" text-anchor="middle" class="terminalText">Ket thuc</text>
+</svg>

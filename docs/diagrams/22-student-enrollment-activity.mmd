@@ -1,0 +1,47 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart TD
+    Start([Bat dau])
+    Login[Nguoi dung dang nhap]
+    OpenEnrollment[Mo trang ho so tuyen sinh]
+    HasEnrollment{Da co ho so?}
+    CreateEnrollment[Khoi tao ho so moi]
+    ShowCurrent[Hien thi tien do ho so]
+    SignPolicy[Nguoi dung ky chinh sach]
+    PolicySigned{Da ky chinh sach?}
+    CreatePaymentUrl[Tao URL thanh toan VNPay]
+    PayOnVnpay[Nguoi dung thanh toan tren VNPay]
+    PaymentCallback[VNPay callback ket qua]
+    PaymentOk{Thanh toan thanh cong?}
+    FillForm[Nhap thong tin tuyen sinh]
+    FormValid{Thong tin hop le?}
+    NeedExam{Can thi dau vao?}
+    RegisterExam[Dang ky lich thi]
+    ExamAvailable{Lich thi con cho?}
+    WaitScore[Cho admin nhap va dong bo diem]
+    Passed{Ket qua dat?}
+    SelectProgram[Chon chuong trinh hoc]
+    ProgramValid{Chuong trinh du dieu kien?}
+    SubmitOriginalDocs[Dat lich nop ho so goc]
+    CompleteEnrollment[Hoan tat ho so va sinh ma ho so]
+    ShowError[Hien thi thong bao loi]
+    End([Ket thuc])
+
+    Start --> Login --> OpenEnrollment --> HasEnrollment
+    HasEnrollment -- Khong --> CreateEnrollment --> ShowCurrent
+    HasEnrollment -- Co --> ShowCurrent
+    ShowCurrent --> SignPolicy --> PolicySigned
+    PolicySigned -- Khong --> ShowError --> End
+    PolicySigned -- Co --> CreatePaymentUrl --> PayOnVnpay --> PaymentCallback --> PaymentOk
+    PaymentOk -- Khong --> ShowError
+    PaymentOk -- Co --> FillForm --> FormValid
+    FormValid -- Khong --> ShowError
+    FormValid -- Co --> NeedExam
+    NeedExam -- Khong --> SelectProgram
+    NeedExam -- Co --> RegisterExam --> ExamAvailable
+    ExamAvailable -- Khong --> ShowError
+    ExamAvailable -- Co --> WaitScore --> Passed
+    Passed -- Khong --> ShowError
+    Passed -- Co --> SelectProgram
+    SelectProgram --> ProgramValid
+    ProgramValid -- Khong --> ShowError
+    ProgramValid -- Co --> SubmitOriginalDocs --> CompleteEnrollment --> End

@@ -1,0 +1,196 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1220" viewBox="0 0 1680 1220" role="img" aria-labelledby="title desc">
+  <title id="title">ERD - Edu Enroll Database Design</title>
+  <desc id="desc">Bieu do ERD cho MongoDB collections chinh cua he thong tuyen sinh Edu Enroll.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #111827; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .entity { fill: #ffffff; stroke: #2563eb; stroke-width: 2; rx: 8; }
+      .head { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; }
+      .entityName { font-size: 15px; font-weight: 700; }
+      .field { font-size: 12px; fill: #334155; }
+      .section { font-size: 17px; font-weight: 700; fill: #475569; }
+      .rel { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .relDash { stroke: #64748b; stroke-width: 1.8; fill: none; stroke-dasharray: 7 5; marker-end: url(#arrow); }
+      .note { font-size: 13px; fill: #475569; }
+    </style>
+  </defs>
+
+  <rect width="1680" height="1220" fill="#ffffff"/>
+  <text x="840" y="48" text-anchor="middle" class="title">2.3.2. Thiet ke co so du lieu - ERD</text>
+  <text x="840" y="76" text-anchor="middle" class="subtitle">MongoDB/Mongoose collections va quan he ObjectId trong he thong tuyen sinh</text>
+
+  <text x="95" y="125" class="section">Nguoi dung va xac thuc</text>
+  <text x="435" y="125" class="section">Ho so tuyen sinh va thanh toan</text>
+  <text x="900" y="125" class="section">Thi dau vao va xu ly sau thi</text>
+  <text x="1300" y="125" class="section">Noi dung va cau hinh</text>
+
+  <!-- User -->
+  <rect x="70" y="150" width="280" height="210" class="entity"/>
+  <rect x="70" y="150" width="280" height="34" class="head"/>
+  <text x="210" y="172" text-anchor="middle" class="entityName">USER</text>
+  <text x="90" y="205" class="field">PK _id: ObjectId</text>
+  <text x="90" y="225" class="field">UK email: string</text>
+  <text x="90" y="245" class="field">password_hash: string</text>
+  <text x="90" y="265" class="field">phone, full_name</text>
+  <text x="90" y="285" class="field">preferred_language</text>
+  <text x="90" y="305" class="field">role: student/staff/admin</text>
+  <text x="90" y="325" class="field">is_active: boolean</text>
+  <text x="90" y="345" class="field">created_at, updated_at</text>
+
+  <rect x="70" y="410" width="280" height="110" class="entity"/>
+  <rect x="70" y="410" width="280" height="34" class="head"/>
+  <text x="210" y="432" text-anchor="middle" class="entityName">REFRESH_TOKEN</text>
+  <text x="90" y="465" class="field">PK _id</text>
+  <text x="90" y="485" class="field">FK user_id -&gt; USER</text>
+  <text x="90" y="505" class="field">UK token, expires_at</text>
+
+  <rect x="70" y="560" width="280" height="110" class="entity"/>
+  <rect x="70" y="560" width="280" height="34" class="head"/>
+  <text x="210" y="582" text-anchor="middle" class="entityName">OTP_CODE</text>
+  <text x="90" y="615" class="field">PK _id</text>
+  <text x="90" y="635" class="field">email, otp, type</text>
+  <text x="90" y="655" class="field">expires_at, is_used</text>
+
+  <!-- Enrollment -->
+  <rect x="430" y="150" width="330" height="250" class="entity"/>
+  <rect x="430" y="150" width="330" height="34" class="head"/>
+  <text x="595" y="172" text-anchor="middle" class="entityName">ENROLLMENT_FORM</text>
+  <text x="450" y="205" class="field">PK _id</text>
+  <text x="450" y="225" class="field">FK user_id -&gt; USER (unique)</text>
+  <text x="450" y="245" class="field">current_step, status</text>
+  <text x="450" y="265" class="field">language, level, schedule, facility</text>
+  <text x="450" y="285" class="field">signed_policy, payment_status</text>
+  <text x="450" y="305" class="field">student_*, parent_*</text>
+  <text x="450" y="325" class="field">exam_required, exam_score</text>
+  <text x="450" y="345" class="field">FK program_id -&gt; TRAINING_PROGRAM</text>
+  <text x="450" y="365" class="field">document_number, documents_submitted</text>
+  <text x="450" y="385" class="field">is_deleted, created_at, updated_at</text>
+
+  <rect x="430" y="450" width="330" height="130" class="entity"/>
+  <rect x="430" y="450" width="330" height="34" class="head"/>
+  <text x="595" y="472" text-anchor="middle" class="entityName">PAYMENT</text>
+  <text x="450" y="505" class="field">PK _id</text>
+  <text x="450" y="525" class="field">FK user_id -&gt; USER</text>
+  <text x="450" y="545" class="field">FK enrollment_id -&gt; ENROLLMENT_FORM</text>
+  <text x="450" y="565" class="field">amount, status, vnpay_ref</text>
+
+  <rect x="430" y="630" width="330" height="150" class="entity"/>
+  <rect x="430" y="630" width="330" height="34" class="head"/>
+  <text x="595" y="652" text-anchor="middle" class="entityName">INVOICE</text>
+  <text x="450" y="685" class="field">PK _id</text>
+  <text x="450" y="705" class="field">FK user_id, FK enrollment_id</text>
+  <text x="450" y="725" class="field">FK payment_id -&gt; PAYMENT</text>
+  <text x="450" y="745" class="field">UK invoice_number</text>
+  <text x="450" y="765" class="field">amount, status, issued_at, paid_at</text>
+
+  <rect x="430" y="830" width="330" height="150" class="entity"/>
+  <rect x="430" y="830" width="330" height="34" class="head"/>
+  <text x="595" y="852" text-anchor="middle" class="entityName">TRAINING_PROGRAM</text>
+  <text x="450" y="885" class="field">PK _id</text>
+  <text x="450" y="905" class="field">language, name, level, level_code</text>
+  <text x="450" y="925" class="field">duration_months, sessions_per_week</text>
+  <text x="450" y="945" class="field">tuition_fee, min_score</text>
+  <text x="450" y="965" class="field">is_active, created_at</text>
+
+  <!-- Exam -->
+  <rect x="850" y="150" width="310" height="170" class="entity"/>
+  <rect x="850" y="150" width="310" height="34" class="head"/>
+  <text x="1005" y="172" text-anchor="middle" class="entityName">EXAM_SCHEDULE</text>
+  <text x="870" y="205" class="field">PK _id</text>
+  <text x="870" y="225" class="field">title, language, exam_date</text>
+  <text x="870" y="245" class="field">location, format</text>
+  <text x="870" y="265" class="field">max_slots, registered_slots</text>
+  <text x="870" y="285" class="field">status, rooms_published</text>
+
+  <rect x="850" y="370" width="310" height="130" class="entity"/>
+  <rect x="850" y="370" width="310" height="34" class="head"/>
+  <text x="1005" y="392" text-anchor="middle" class="entityName">EXAM_ROOM</text>
+  <text x="870" y="425" class="field">PK _id</text>
+  <text x="870" y="445" class="field">FK schedule_id -&gt; EXAM_SCHEDULE</text>
+  <text x="870" y="465" class="field">name, location, capacity</text>
+  <text x="870" y="485" class="field">assigned_count</text>
+
+  <rect x="850" y="550" width="310" height="170" class="entity"/>
+  <rect x="850" y="550" width="310" height="34" class="head"/>
+  <text x="1005" y="572" text-anchor="middle" class="entityName">EXAM_REGISTRATION</text>
+  <text x="870" y="605" class="field">PK _id</text>
+  <text x="870" y="625" class="field">FK user_id, enrollment_id</text>
+  <text x="870" y="645" class="field">FK schedule_id, room_id</text>
+  <text x="870" y="665" class="field">UK exam_code</text>
+  <text x="870" y="685" class="field">bag_number, anonymous_code</text>
+  <text x="870" y="705" class="field">status</text>
+
+  <rect x="850" y="770" width="310" height="130" class="entity"/>
+  <rect x="850" y="770" width="310" height="34" class="head"/>
+  <text x="1005" y="792" text-anchor="middle" class="entityName">EXAM_SCORE</text>
+  <text x="870" y="825" class="field">PK _id</text>
+  <text x="870" y="845" class="field">FK registration_id -&gt; EXAM_REGISTRATION</text>
+  <text x="870" y="865" class="field">score, level_passed</text>
+  <text x="870" y="885" class="field">pass_status, pass_threshold</text>
+
+  <rect x="850" y="950" width="310" height="150" class="entity"/>
+  <rect x="850" y="950" width="310" height="34" class="head"/>
+  <text x="1005" y="972" text-anchor="middle" class="entityName">RECHECK_REQUEST / INTERVIEW</text>
+  <text x="870" y="1005" class="field">FK user_id -&gt; USER</text>
+  <text x="870" y="1025" class="field">FK enrollment_id -&gt; ENROLLMENT_FORM</text>
+  <text x="870" y="1045" class="field">registration_id / scheduled_at</text>
+  <text x="870" y="1065" class="field">status, notes, admin fields</text>
+
+  <!-- Content and logs -->
+  <rect x="1260" y="150" width="300" height="130" class="entity"/>
+  <rect x="1260" y="150" width="300" height="34" class="head"/>
+  <text x="1410" y="172" text-anchor="middle" class="entityName">NOTIFICATION</text>
+  <text x="1280" y="205" class="field">PK _id, FK user_id -&gt; USER</text>
+  <text x="1280" y="225" class="field">title, message, type, link</text>
+  <text x="1280" y="245" class="field">is_read, created_at</text>
+
+  <rect x="1260" y="330" width="300" height="130" class="entity"/>
+  <rect x="1260" y="330" width="300" height="34" class="head"/>
+  <text x="1410" y="352" text-anchor="middle" class="entityName">ENROLLMENT_LOG</text>
+  <text x="1280" y="385" class="field">PK _id</text>
+  <text x="1280" y="405" class="field">FK enrollment_id, changed_by</text>
+  <text x="1280" y="425" class="field">action, field_name</text>
+  <text x="1280" y="445" class="field">old_value, new_value, created_at</text>
+
+  <rect x="1260" y="510" width="300" height="130" class="entity"/>
+  <rect x="1260" y="510" width="300" height="34" class="head"/>
+  <text x="1410" y="532" text-anchor="middle" class="entityName">BANNER / NEWS</text>
+  <text x="1280" y="565" class="field">Banner: title, image_url, is_active</text>
+  <text x="1280" y="585" class="field">News: title, slug, content</text>
+  <text x="1280" y="605" class="field">status, published_at</text>
+  <text x="1280" y="625" class="field">created_at, updated_at</text>
+
+  <rect x="1260" y="690" width="300" height="130" class="entity"/>
+  <rect x="1260" y="690" width="300" height="34" class="head"/>
+  <text x="1410" y="712" text-anchor="middle" class="entityName">SYSTEM_CONFIG / COUNTER</text>
+  <text x="1280" y="745" class="field">Config: UK key, value, group</text>
+  <text x="1280" y="765" class="field">FK updated_by -&gt; USER</text>
+  <text x="1280" y="785" class="field">Counter: counter_key, current_value</text>
+
+  <!-- Relationships -->
+  <path d="M350 255 L430 255" class="rel"/>
+  <path d="M210 360 L210 410" class="rel"/>
+  <path d="M350 285 C390 285 390 515 430 515" class="rel"/>
+  <path d="M350 305 C390 305 390 700 430 700" class="rel"/>
+  <path d="M760 275 L850 630" class="rel"/>
+  <path d="M760 275 L850 235" class="rel"/>
+  <path d="M760 355 C820 390 820 655 850 635" class="rel"/>
+  <path d="M760 455 C805 500 805 650 850 650" class="rel"/>
+  <path d="M760 705 C800 705 800 860 850 835" class="rel"/>
+  <path d="M595 830 L595 780" class="rel"/>
+  <path d="M850 235 L760 275" class="relDash"/>
+  <path d="M1005 320 L1005 370" class="rel"/>
+  <path d="M1005 500 L1005 550" class="rel"/>
+  <path d="M1005 720 L1005 770" class="rel"/>
+  <path d="M1005 900 L1005 950" class="rel"/>
+  <path d="M350 245 C1080 85 1250 185 1260 205" class="relDash"/>
+  <path d="M760 275 C1120 255 1210 365 1260 395" class="relDash"/>
+  <path d="M350 330 C1050 980 1200 760 1260 755" class="relDash"/>
+
+  <text x="70" y="1160" class="note">Ghi chu: Day la ERD logic cho MongoDB collections. Cac quan he duoc cai dat bang ObjectId ref trong Mongoose, khong phai foreign key vat ly nhu CSDL quan he.</text>
+</svg>

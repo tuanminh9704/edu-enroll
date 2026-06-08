@@ -10,29 +10,87 @@ import { useEnrollmentStore } from '../../../store/enrollment.store';
 import { useAuthStore } from '../../../store/auth.store';
 import { LANGUAGES, LEVELS, TRAINING_TYPES, SCHEDULES, FACILITIES, BEGINNER_LEVELS } from '../../../constants';
 
+const CCCD_REGEX = /^(\d{9}|\d{12})$/;
+const VIETNAM_PHONE_REGEX = /^(0[35789])[0-9]{8}$/;
+
+const optionalText = (max: number, message: string) =>
+  z.string().trim().max(max, message).optional().or(z.literal(''));
+
+const optionalParentPhone = z.string().trim()
+  .regex(VIETNAM_PHONE_REGEX, 'Số điện thoại phụ huynh phải có 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09')
+  .optional()
+  .or(z.literal(''));
+
+const isUnder18 = (dateText?: string) => {
+  if (!dateText) return false;
+  const dob = dayjs(dateText);
+  if (!dob.isValid()) return false;
+  return dayjs().diff(dob, 'year') < 18;
+};
+
 const formSchema = z.object({
   language: z.string().min(1, 'Vui lòng chọn ngoại ngữ'),
   level: z.string().min(1, 'Vui lòng chọn trình độ'),
   training_type: z.string().min(1, 'Vui lòng chọn hình thức học'),
   schedule: z.string().min(1, 'Vui lòng chọn lịch học'),
   facility: z.string().min(1, 'Vui lòng chọn cơ sở'),
-  student_full_name: z.string().min(2, 'Họ tên tối thiểu 2 ký tự'),
-  student_dob: z.string().min(1, 'Vui lòng chọn ngày sinh'),
+  student_full_name: z.string().trim()
+    .min(2, 'Họ tên học viên phải có ít nhất 2 ký tự')
+    .max(100, 'Họ tên học viên không được vượt quá 100 ký tự'),
+  student_dob: z.string().min(1, 'Vui lòng chọn ngày sinh')
+    .refine((value) => dayjs(value).isValid(), 'Ngày sinh không đúng định dạng')
+    .refine((value) => !dayjs(value).isAfter(dayjs(), 'day'), 'Ngày sinh không được lớn hơn ngày hiện tại'),
   student_gender: z.enum(['male', 'female', 'other'], { required_error: 'Vui lòng chọn giới tính' }),
-  student_cccd: z.string().min(9, 'CCCD/CMND không hợp lệ'),
-  student_address: z.string().min(5, 'Địa chỉ quá ngắn'),
-  student_current_school: z.string().optional(),
-  parent_full_name: z.string().optional(),
-  parent_phone: z.string().optional(),
-  parent_email: z.string().email('Email không hợp lệ').optional().or(z.literal('')),
-  notes: z.string().optional(),
+  student_cccd: z.string().trim().regex(CCCD_REGEX, 'CCCD/CMND phải gồm đúng 9 hoặc 12 chữ số'),
+  student_address: z.string().trim()
+    .min(5, 'Địa chỉ phải có ít nhất 5 ký tự')
+    .max(255, 'Địa chỉ không được vượt quá 255 ký tự'),
+  student_current_school: optionalText(150, 'Tên trường đang học không được vượt quá 150 ký tự'),
+  parent_full_name: optionalText(100, 'Họ tên phụ huynh không được vượt quá 100 ký tự'),
+  parent_phone: optionalParentPhone,
+  parent_email: z.string().trim().email('Email phụ huynh không đúng định dạng, ví dụ: phuhuynh@example.com').optional().or(z.literal('')),
+  notes: optionalText(500, 'Ghi chú không được vượt quá 500 ký tự'),
   preferred_exam_date: z.string().optional(),
 }).refine((data) => BEGINNER_LEVELS.includes(data.level) || !!data.preferred_exam_date, {
   message: 'Vui lòng chọn ngày kiểm tra',
   path: ['preferred_exam_date'],
+}).superRefine((data, ctx) => {
+  if (!isUnder18(data.student_dob)) return;
+  if (!data.parent_full_name || data.parent_full_name.trim().length < 2) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['parent_full_name'],
+      message: 'Học viên dưới 18 tuổi phải nhập họ tên phụ huynh, tối thiểu 2 ký tự',
+    });
+  }
+  if (!data.parent_phone) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['parent_phone'],
+      message: 'Học viên dưới 18 tuổi phải nhập số điện thoại phụ huynh',
+    });
+  }
 });
 
 type FormData = z.infer<typeof formSchema>;
+
+interface ApiValidationError {
+  field?: string;
+  message?: string;
+}
+
+const formatSubmitError = (err: unknown) => {
+  const response = (err as { response?: { data?: { message?: string; errors?: ApiValidationError[] } } }).response?.data;
+  const messages = response?.errors
+    ?.map((item) => item.message)
+    .filter((message): message is string => Boolean(message));
+
+  if (messages?.length) {
+    return `Vui lòng kiểm tra lại hồ sơ: ${Array.from(new Set(messages)).join('; ')}`;
+  }
+
+  return response?.message || 'Có lỗi xảy ra';
+};
 
 interface ExamDateSchedule {
   _id?: string;
@@ -118,8 +176,7 @@ export default function Step3Form() {
       const updated = await enrollmentService.submitForm(data as Record<string, unknown>);
       setEnrollment(updated);
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Có lỗi xảy ra';
-      setStoreError(msg);
+      setStoreError(formatSubmitError(err));
     }
   };
 

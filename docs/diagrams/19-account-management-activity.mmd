@@ -1,0 +1,62 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart TD
+    Start([Bat dau])
+    OpenProfile[Nguoi dung mo trang quan ly tai khoan]
+    RequestProfile[Frontend gui yeu cau lay thong tin tai khoan]
+    CheckToken{Token hop le?}
+    LoadUser[He thong truy van thong tin nguoi dung]
+    UserExists{Tai khoan ton tai va dang hoat dong?}
+    ShowProfile[Giao dien hien thi thong tin tai khoan]
+    ChooseAction{Nguoi dung chon thao tac}
+
+    EditProfile[Nguoi dung cap nhat ho so ca nhan]
+    SendProfile[Frontend gui du lieu cap nhat ho so]
+    ValidateProfile{Du lieu ho so hop le?}
+    CheckOwner{Dung chu tai khoan?}
+    SaveProfile[He thong cap nhat thong tin tai khoan]
+    ShowProfileSuccess[Hien thi thong bao cap nhat thanh cong]
+
+    ChangePassword[Nguoi dung doi mat khau]
+    SendPassword[Frontend gui mat khau hien tai va mat khau moi]
+    CurrentPasswordOk{Mat khau hien tai dung?}
+    NewPasswordOk{Mat khau moi dat yeu cau?}
+    SavePassword[He thong cap nhat mat khau moi]
+    RevokeTokens[Vo hieu refresh token cu]
+    ShowPasswordSuccess[Hien thi thong bao doi mat khau thanh cong]
+
+    InvalidToken[Thong bao phien dang nhap khong hop le]
+    LoginAgain[Chuyen nguoi dung ve dang nhap]
+    AccountError[Thong bao khong the truy cap tai khoan]
+    ValidationError[Thong bao du lieu khong hop le]
+    PermissionError[Thong bao khong co quyen cap nhat]
+    PasswordError[Thong bao mat khau khong hop le]
+    End([Ket thuc])
+
+    Start --> OpenProfile --> RequestProfile --> CheckToken
+    CheckToken -- Khong --> InvalidToken --> LoginAgain --> End
+    CheckToken -- Co --> LoadUser --> UserExists
+    UserExists -- Khong --> AccountError --> End
+    UserExists -- Co --> ShowProfile --> ChooseAction
+
+    ChooseAction -- Cap nhat ho so --> EditProfile --> SendProfile --> ValidateProfile
+    ValidateProfile -- Khong --> ValidationError --> ShowProfile
+    ValidateProfile -- Co --> CheckOwner
+    CheckOwner -- Khong --> PermissionError --> ShowProfile
+    CheckOwner -- Co --> SaveProfile --> ShowProfileSuccess --> End
+
+    ChooseAction -- Doi mat khau --> ChangePassword --> SendPassword --> CurrentPasswordOk
+    CurrentPasswordOk -- Khong --> PasswordError --> ShowProfile
+    CurrentPasswordOk -- Co --> NewPasswordOk
+    NewPasswordOk -- Khong --> PasswordError --> ShowProfile
+    NewPasswordOk -- Co --> SavePassword --> RevokeTokens --> ShowPasswordSuccess --> End
+
+    ChooseAction -- Khong thay doi --> End
+
+    classDef startEnd fill:#111827,stroke:#111827,color:#fff;
+    classDef action fill:#eff6ff,stroke:#2563eb,color:#111827;
+    classDef decision fill:#fff7ed,stroke:#ea580c,color:#111827;
+    classDef error fill:#fef2f2,stroke:#dc2626,color:#111827;
+    class Start,End startEnd;
+    class OpenProfile,RequestProfile,LoadUser,ShowProfile,EditProfile,SendProfile,SaveProfile,ShowProfileSuccess,ChangePassword,SendPassword,SavePassword,RevokeTokens,ShowPasswordSuccess,LoginAgain action;
+    class CheckToken,UserExists,ChooseAction,ValidateProfile,CheckOwner,CurrentPasswordOk,NewPasswordOk decision;
+    class InvalidToken,AccountError,ValidationError,PermissionError,PasswordError error;

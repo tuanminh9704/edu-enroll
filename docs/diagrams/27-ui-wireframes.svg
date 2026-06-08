@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1260" viewBox="0 0 1680 1260" role="img" aria-labelledby="title desc">
+  <title id="title">UI Wireframes - Edu Enroll</title>
+  <desc id="desc">Mockup wireframe cac man hinh chinh cua he thong tuyen sinh Edu Enroll.</desc>
+  <defs>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #111827; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .frame { fill: #ffffff; stroke: #0f172a; stroke-width: 2; rx: 14; }
+      .topbar { fill: #eff6ff; stroke: #2563eb; stroke-width: 1.5; rx: 8; }
+      .sidebar { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; rx: 8; }
+      .block { fill: #f8fafc; stroke: #94a3b8; stroke-width: 1.4; rx: 8; }
+      .primary { fill: #dbeafe; stroke: #2563eb; stroke-width: 1.4; rx: 8; }
+      .accent { fill: #fff7ed; stroke: #ea580c; stroke-width: 1.4; rx: 8; }
+      .success { fill: #ecfdf5; stroke: #059669; stroke-width: 1.4; rx: 8; }
+      .danger { fill: #fef2f2; stroke: #dc2626; stroke-width: 1.4; rx: 8; }
+      .line { stroke: #94a3b8; stroke-width: 2; }
+      .label { font-size: 15px; font-weight: 700; }
+      .small { font-size: 12px; fill: #475569; }
+      .tiny { font-size: 10px; fill: #64748b; }
+    </style>
+  </defs>
+
+  <rect width="1680" height="1260" fill="#ffffff"/>
+  <text x="840" y="46" text-anchor="middle" class="title">2.3.3. Thiet ke giao dien nguoi dung - Mockup / Wireframe</text>
+  <text x="840" y="74" text-anchor="middle" class="subtitle">Cac man hinh chinh: public, authentication, user portal, enrollment flow va admin portal</text>
+
+  <!-- Home -->
+  <rect x="60" y="110" width="480" height="310" class="frame"/>
+  <text x="300" y="138" text-anchor="middle" class="label">Trang chu cong khai (/)</text>
+  <rect x="85" y="160" width="430" height="42" class="topbar"/>
+  <text x="110" y="186" class="small">Logo</text>
+  <text x="405" y="186" class="small">Dang nhap | Dang ky</text>
+  <rect x="85" y="220" width="430" height="92" class="primary"/>
+  <text x="300" y="260" text-anchor="middle" class="label">Banner tuyen sinh</text>
+  <text x="300" y="282" text-anchor="middle" class="small">CTA: Dang ky tuyen sinh</text>
+  <rect x="85" y="330" width="130" height="60" class="block"/>
+  <rect x="235" y="330" width="130" height="60" class="block"/>
+  <rect x="385" y="330" width="130" height="60" class="block"/>
+  <text x="150" y="365" text-anchor="middle" class="small">Tin tuc</text>
+  <text x="300" y="365" text-anchor="middle" class="small">Thong bao</text>
+  <text x="450" y="365" text-anchor="middle" class="small">Huong dan</text>
+
+  <!-- Auth -->
+  <rect x="600" y="110" width="480" height="310" class="frame"/>
+  <text x="840" y="138" text-anchor="middle" class="label">Dang nhap / Dang ky / OTP</text>
+  <rect x="625" y="160" width="190" height="220" class="block"/>
+  <text x="720" y="190" text-anchor="middle" class="label">Form dang nhap</text>
+  <line x1="655" y1="225" x2="785" y2="225" class="line"/>
+  <line x1="655" y1="260" x2="785" y2="260" class="line"/>
+  <rect x="655" y="292" width="130" height="34" class="primary"/>
+  <text x="720" y="314" text-anchor="middle" class="small">Dang nhap</text>
+  <text x="720" y="352" text-anchor="middle" class="tiny">Quen mat khau</text>
+  <rect x="845" y="160" width="210" height="220" class="block"/>
+  <text x="950" y="190" text-anchor="middle" class="label">Dang ky / OTP</text>
+  <line x1="875" y1="225" x2="1025" y2="225" class="line"/>
+  <line x1="875" y1="260" x2="1025" y2="260" class="line"/>
+  <line x1="875" y1="295" x2="1025" y2="295" class="line"/>
+  <rect x="875" y="325" width="150" height="34" class="accent"/>
+  <text x="950" y="347" text-anchor="middle" class="small">Gui / Xac thuc OTP</text>
+
+  <!-- Account -->
+  <rect x="1140" y="110" width="480" height="310" class="frame"/>
+  <text x="1380" y="138" text-anchor="middle" class="label">Tai khoan va thong bao</text>
+  <rect x="1165" y="160" width="100" height="230" class="sidebar"/>
+  <text x="1215" y="190" text-anchor="middle" class="small">Menu</text>
+  <text x="1215" y="220" text-anchor="middle" class="tiny">Tai khoan</text>
+  <text x="1215" y="245" text-anchor="middle" class="tiny">Ho so</text>
+  <text x="1215" y="270" text-anchor="middle" class="tiny">Thong bao</text>
+  <rect x="1290" y="160" width="305" height="75" class="primary"/>
+  <text x="1442" y="190" text-anchor="middle" class="label">Thong tin ca nhan</text>
+  <text x="1442" y="213" text-anchor="middle" class="small">Ho ten, email, so dien thoai</text>
+  <rect x="1290" y="255" width="140" height="110" class="block"/>
+  <text x="1360" y="292" text-anchor="middle" class="small">Doi mat khau</text>
+  <rect x="1455" y="255" width="140" height="110" class="success"/>
+  <text x="1525" y="292" text-anchor="middle" class="small">Thong bao</text>
+  <text x="1525" y="315" text-anchor="middle" class="tiny">Unread count</text>
+
+  <!-- Enrollment -->
+  <rect x="60" y="480" width="760" height="350" class="frame"/>
+  <text x="440" y="508" text-anchor="middle" class="label">Ho so tuyen sinh (/ho-so)</text>
+  <rect x="90" y="535" width="700" height="44" class="topbar"/>
+  <text x="440" y="562" text-anchor="middle" class="small">Stepper: Chinh sach -> Thanh toan -> Thong tin -> Thi -> Chuong trinh -> Ho so goc</text>
+  <rect x="90" y="605" width="210" height="165" class="block"/>
+  <text x="195" y="635" text-anchor="middle" class="label">Buoc hien tai</text>
+  <text x="195" y="665" text-anchor="middle" class="small">Noi dung form</text>
+  <line x1="125" y1="695" x2="265" y2="695" class="line"/>
+  <line x1="125" y1="725" x2="265" y2="725" class="line"/>
+  <rect x="340" y="605" width="210" height="165" class="accent"/>
+  <text x="445" y="635" text-anchor="middle" class="label">Trang thai ho so</text>
+  <text x="445" y="665" text-anchor="middle" class="small">Da ky / Da thanh toan</text>
+  <text x="445" y="690" text-anchor="middle" class="small">Ket qua thi</text>
+  <text x="445" y="715" text-anchor="middle" class="small">Chuong trinh da chon</text>
+  <rect x="590" y="605" width="200" height="165" class="success"/>
+  <text x="690" y="635" text-anchor="middle" class="label">Hanh dong</text>
+  <rect x="625" y="670" width="130" height="34" class="primary"/>
+  <text x="690" y="692" text-anchor="middle" class="small">Tiep tuc</text>
+  <rect x="625" y="720" width="130" height="34" class="block"/>
+  <text x="690" y="742" text-anchor="middle" class="small">Luu nhap</text>
+
+  <!-- Admin dashboard -->
+  <rect x="860" y="480" width="760" height="350" class="frame"/>
+  <text x="1240" y="508" text-anchor="middle" class="label">Dashboard quan tri (/quan-tri)</text>
+  <rect x="890" y="535" width="130" height="255" class="sidebar"/>
+  <text x="955" y="565" text-anchor="middle" class="small">Admin menu</text>
+  <text x="955" y="595" text-anchor="middle" class="tiny">Dashboard</text>
+  <text x="955" y="620" text-anchor="middle" class="tiny">Nguoi dung</text>
+  <text x="955" y="645" text-anchor="middle" class="tiny">Ho so</text>
+  <text x="955" y="670" text-anchor="middle" class="tiny">Ky thi / Diem</text>
+  <text x="955" y="695" text-anchor="middle" class="tiny">Noi dung</text>
+  <rect x="1050" y="535" width="125" height="78" class="primary"/>
+  <rect x="1195" y="535" width="125" height="78" class="primary"/>
+  <rect x="1340" y="535" width="125" height="78" class="primary"/>
+  <rect x="1485" y="535" width="105" height="78" class="primary"/>
+  <text x="1112" y="580" text-anchor="middle" class="small">Users</text>
+  <text x="1257" y="580" text-anchor="middle" class="small">Ho so</text>
+  <text x="1402" y="580" text-anchor="middle" class="small">Doanh thu</text>
+  <text x="1537" y="580" text-anchor="middle" class="small">Cho xu ly</text>
+  <rect x="1050" y="645" width="540" height="145" class="block"/>
+  <text x="1320" y="675" text-anchor="middle" class="label">Bang thong ke / bieu do</text>
+  <line x1="1085" y1="710" x2="1555" y2="710" class="line"/>
+  <line x1="1085" y1="745" x2="1555" y2="745" class="line"/>
+
+  <!-- Admin list -->
+  <rect x="270" y="890" width="1140" height="290" class="frame"/>
+  <text x="840" y="918" text-anchor="middle" class="label">Man hinh quan ly danh sach cua admin</text>
+  <rect x="300" y="945" width="1080" height="42" class="topbar"/>
+  <text x="330" y="971" class="small">Tieu de module</text>
+  <rect x="1160" y="954" width="95" height="24" class="primary"/>
+  <text x="1207" y="971" text-anchor="middle" class="tiny">Them moi</text>
+  <rect x="1270" y="954" width="85" height="24" class="accent"/>
+  <text x="1312" y="971" text-anchor="middle" class="tiny">Export</text>
+  <rect x="300" y="1010" width="1080" height="50" class="block"/>
+  <text x="355" y="1040" class="small">Bo loc / Tim kiem / Trang thai / Ngay</text>
+  <rect x="300" y="1080" width="1080" height="70" class="block"/>
+  <text x="355" y="1110" class="small">Bang du lieu: cot thong tin, trang thai, ngay tao, hanh dong</text>
+  <line x1="320" y1="1128" x2="1360" y2="1128" class="line"/>
+  <text x="840" y="1168" text-anchor="middle" class="tiny">Ap dung cho: Nguoi dung, Ho so, Ky thi, Diem thi, Phuc khao, Phong van, Hoa don, Chuong trinh, Noi dung</text>
+</svg>

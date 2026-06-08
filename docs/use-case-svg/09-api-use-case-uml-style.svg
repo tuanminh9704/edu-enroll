@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="1760" viewBox="0 0 980 1760">
+<style>
+  .line { stroke: #333; stroke-width: 1.5; fill: none; }
+  .oval { stroke: #222; stroke-width: 1.5; fill: #fff; }
+  .actor { stroke: #222; stroke-width: 1.5; fill: #fff; }
+  .txt { font-family: Arial, Helvetica, sans-serif; fill: #111; }
+  .title { font-weight: 700; font-size: 22px; }
+</style>
+<text x="490" y="28" font-size="22" text-anchor="middle" class="txt">So do use case tong quat - edu-enroll-api</text>
+
+  <circle cx="95" cy="455" r="14" class="actor"/>
+  <line x1="95" y1="469" x2="95" y2="512"  class="line"/>
+  <line x1="67" y1="488" x2="123" y2="488"  class="line"/>
+  <line x1="95" y1="512" x2="70" y2="548"  class="line"/>
+  <line x1="95" y1="512" x2="120" y2="548"  class="line"/>
+  <text x="95" y="575" font-size="15" text-anchor="middle" class="txt">Hoc vien / Phu huynh</text>
+
+
+  <circle cx="95" cy="1165" r="14" class="actor"/>
+  <line x1="95" y1="1179" x2="95" y2="1222"  class="line"/>
+  <line x1="67" y1="1198" x2="123" y2="1198"  class="line"/>
+  <line x1="95" y1="1222" x2="70" y2="1258"  class="line"/>
+  <line x1="95" y1="1222" x2="120" y2="1258"  class="line"/>
+  <text x="95" y="1285" font-size="15" text-anchor="middle" class="txt">Quan tri vien</text>
+
+
+  <circle cx="850" cy="99" r="14" class="actor"/>
+  <line x1="850" y1="113" x2="850" y2="156"  class="line"/>
+  <line x1="822" y1="132" x2="878" y2="132"  class="line"/>
+  <line x1="850" y1="156" x2="825" y2="192"  class="line"/>
+  <line x1="850" y1="156" x2="875" y2="192"  class="line"/>
+  <text x="850" y="219" font-size="15" text-anchor="middle" class="txt">VNPay</text>
+
+
+  <circle cx="850" cy="830" r="14" class="actor"/>
+  <line x1="850" y1="844" x2="850" y2="887"  class="line"/>
+  <line x1="822" y1="863" x2="878" y2="863"  class="line"/>
+  <line x1="850" y1="887" x2="825" y2="923"  class="line"/>
+  <line x1="850" y1="887" x2="875" y2="923"  class="line"/>
+  <text x="850" y="950" font-size="15" text-anchor="middle" class="txt">Email Service</text>
+
+
+  <circle cx="850" cy="57" r="14" class="actor"/>
+  <line x1="850" y1="71" x2="850" y2="114"  class="line"/>
+  <line x1="822" y1="90" x2="878" y2="90"  class="line"/>
+  <line x1="850" y1="114" x2="825" y2="150"  class="line"/>
+  <line x1="850" y1="114" x2="875" y2="150"  class="line"/>
+  <text x="850" y="177" font-size="15" text-anchor="middle" class="txt">Cloudinary</text>
+
+<ellipse cx="560" cy="60" rx="108" ry="24" class="oval"/>
+<text x="560" y="65" font-size="13" text-anchor="middle" class="txt">XemNoiDungCongKhai</text>
+<ellipse cx="560" cy="102" rx="108" ry="24" class="oval"/>
+<text x="560" y="107" font-size="13" text-anchor="middle" class="txt">UploadFile</text>
+<ellipse cx="560" cy="144" rx="108" ry="24" class="oval"/>
+<text x="560" y="149" font-size="13" text-anchor="middle" class="txt">ThanhToan</text>
+<ellipse cx="560" cy="186" rx="108" ry="24" class="oval"/>
+<text x="560" y="191" font-size="13" text-anchor="middle" class="txt">DangNhap</text>
+<ellipse cx="560" cy="228" rx="108" ry="24" class="oval"/>
+<text x="560" y="233" font-size="13" text-anchor="middle" class="txt">DangXuat</text>
+<ellipse cx="560" cy="270" rx="108" ry="24" class="oval"/>
+<text x="560" y="275" font-size="13" text-anchor="middle" class="txt">DangKy</text>
+<ellipse cx="560" cy="312" rx="108" ry="24" class="oval"/>
+<text x="560" y="317" font-size="13" text-anchor="middle" class="txt">CapNhatThongTin</text>
+<ellipse cx="560" cy="354" rx="108" ry="24" class="oval"/>
+<text x="560" y="359" font-size="13" text-anchor="middle" class="txt">KhoiTaoHoSo</text>
+<ellipse cx="560" cy="396" rx="108" ry="24" class="oval"/>
+<text x="560" y="401" font-size="13" text-anchor="middle" class="txt">KyChinhSach</text>
+<ellipse cx="560" cy="438" rx="108" ry="24" class="oval"/>
+<text x="560" y="443" font-size="13" text-anchor="middle" class="txt">XacThucOTP</text>
+<ellipse cx="560" cy="480" rx="108" ry="24" class="oval"/>
+<text x="560" y="485" font-size="13" text-anchor="middle" class="txt">DienHoSo</text>
+<ellipse cx="560" cy="522" rx="108" ry="24" class="oval"/>
+<text x="560" y="527" font-size="13" text-anchor="middle" class="txt">QuenMatKhau</text>
+<ellipse cx="560" cy="564" rx="108" ry="24" class="oval"/>
+<text x="560" y="569" font-size="13" text-anchor="middle" class="txt">DangKyThi</text>
+<ellipse cx="560" cy="606" rx="108" ry="24" class="oval"/>
+<text x="560" y="611" font-size="13" text-anchor="middle" class="txt">BoQuaThi</text>
+<ellipse cx="560" cy="648" rx="108" ry="24" class="oval"/>
+<text x="560" y="653" font-size="13" text-anchor="middle" class="txt">XemKetQuaThi</text>
+<ellipse cx="560" cy="690" rx="108" ry="24" class="oval"/>
+<text x="560" y="695" font-size="13" text-anchor="middle" class="txt">ChonChuongTrinh</text>
+<ellipse cx="560" cy="732" rx="108" ry="24" class="oval"/>
+<text x="560" y="737" font-size="13" text-anchor="middle" class="txt">NopHoSoGoc</text>
+<ellipse cx="560" cy="774" rx="108" ry="24" class="oval"/>
+<text x="560" y="779" font-size="13" text-anchor="middle" class="txt">GuiPhucKhao</text>
+<ellipse cx="560" cy="816" rx="108" ry="24" class="oval"/>
+<text x="560" y="821" font-size="13" text-anchor="middle" class="txt">XacNhanPhongVan</text>
+<ellipse cx="560" cy="858" rx="108" ry="24" class="oval"/>
+<text x="560" y="863" font-size="13" text-anchor="middle" class="txt">XemHoaDon</text>
+<ellipse cx="560" cy="900" rx="108" ry="24" class="oval"/>
+<text x="560" y="905" font-size="13" text-anchor="middle" class="txt">XemThongBao</text>
+<ellipse cx="560" cy="942" rx="108" ry="24" class="oval"/>
+<text x="560" y="947" font-size="13" text-anchor="middle" class="txt">XemDashboard</text>
+<ellipse cx="560" cy="984" rx="108" ry="24" class="oval"/>
+<text x="560" y="989" font-size="13" text-anchor="middle" class="txt">QuanLyNguoiDung</text>
+<ellipse cx="560" cy="1026" rx="108" ry="24" class="oval"/>
+<text x="560" y="1031" font-size="13" text-anchor="middle" class="txt">QuanLyHoSo</text>
+<ellipse cx="560" cy="1068" rx="108" ry="24" class="oval"/>
+<text x="560" y="1073" font-size="13" text-anchor="middle" class="txt">QuanLyLichThi</text>
+<ellipse cx="560" cy="1110" rx="108" ry="24" class="oval"/>
+<text x="560" y="1115" font-size="13" text-anchor="middle" class="txt">QuanLyPhongThi</text>
+<ellipse cx="560" cy="1152" rx="108" ry="24" class="oval"/>
+<text x="560" y="1157" font-size="13" text-anchor="middle" class="txt">XepThiSinh</text>
+<ellipse cx="560" cy="1194" rx="108" ry="24" class="oval"/>
+<text x="560" y="1199" font-size="13" text-anchor="middle" class="txt">DanhSoTuiMaPhach</text>
+<ellipse cx="560" cy="1236" rx="108" ry="24" class="oval"/>
+<text x="560" y="1241" font-size="13" text-anchor="middle" class="txt">NhapDongBoDiem</text>
+<ellipse cx="560" cy="1278" rx="108" ry="24" class="oval"/>
+<text x="560" y="1283" font-size="13" text-anchor="middle" class="txt">QuanLyChuongTrinh</text>
+<ellipse cx="560" cy="1320" rx="108" ry="24" class="oval"/>
+<text x="560" y="1325" font-size="13" text-anchor="middle" class="txt">ImportExportCSV</text>
+<ellipse cx="560" cy="1362" rx="108" ry="24" class="oval"/>
+<text x="560" y="1367" font-size="13" text-anchor="middle" class="txt">GuiThongBao</text>
+<ellipse cx="560" cy="1404" rx="108" ry="24" class="oval"/>
+<text x="560" y="1409" font-size="13" text-anchor="middle" class="txt">XuLyPhucKhao</text>
+<ellipse cx="560" cy="1446" rx="108" ry="24" class="oval"/>
+<text x="560" y="1451" font-size="13" text-anchor="middle" class="txt">QuanLyPhongVan</text>
+<ellipse cx="560" cy="1488" rx="108" ry="24" class="oval"/>
+<text x="560" y="1493" font-size="13" text-anchor="middle" class="txt">QuanLyHoaDon</text>
+<ellipse cx="560" cy="1530" rx="108" ry="24" class="oval"/>
+<text x="560" y="1535" font-size="13" text-anchor="middle" class="txt">QuanLyBanner</text>
+<ellipse cx="560" cy="1572" rx="108" ry="24" class="oval"/>
+<text x="560" y="1577" font-size="13" text-anchor="middle" class="txt">QuanLyTinTuc</text>
+<ellipse cx="560" cy="1614" rx="108" ry="24" class="oval"/>
+<text x="560" y="1619" font-size="13" text-anchor="middle" class="txt">QuanLyCauHinh</text>
+<line x1="125" y1="492" x2="452" y2="60"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="102"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="144"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="186"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="228"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="270"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="312"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="354"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="396"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="438"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="480"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="522"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="564"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="606"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="648"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="690"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="732"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="774"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="816"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="858"  class="line"/>
+<line x1="125" y1="492" x2="452" y2="900"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="186"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="228"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="900"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="942"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="984"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1026"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1068"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1110"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1152"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1194"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1236"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1278"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1320"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1362"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1404"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1446"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1488"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1530"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1572"  class="line"/>
+<line x1="125" y1="1202" x2="452" y2="1614"  class="line"/>
+<line x1="668" y1="144" x2="820" y2="136"  class="line"/>
+<line x1="668" y1="102" x2="820" y2="94"  class="line"/>
+<line x1="668" y1="270" x2="820" y2="867"  class="line"/>
+<line x1="668" y1="438" x2="820" y2="867"  class="line"/>
+<line x1="668" y1="522" x2="820" y2="867"  class="line"/>
+<line x1="668" y1="900" x2="820" y2="867"  class="line"/>
+<line x1="668" y1="1362" x2="820" y2="867"  class="line"/>
+</svg>

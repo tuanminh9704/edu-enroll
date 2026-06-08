@@ -1,0 +1,56 @@
+flowchart LR
+    Student["Hoc vien / Phu huynh"]
+    Admin["Quan tri vien"]
+    VNPay["VNPay"]
+    Email["Email Service"]
+
+    UC01(("Xem noi dung cong khai"))
+    UC02(("Dang ky / dang nhap"))
+    UC03(("Quan ly tai khoan"))
+    UC04(("Lap ho so tuyen sinh"))
+    UC05(("Thanh toan le phi"))
+    UC06(("Dang ky / xem ket qua thi"))
+    UC07(("Chon chuong trinh hoc"))
+    UC08(("Nop ho so goc"))
+    UC09(("Phuc khao / phong van"))
+    UC10(("Xem hoa don / thong bao"))
+    UC11(("Xem dashboard"))
+    UC12(("Quan ly nguoi dung"))
+    UC13(("Quan ly ho so tuyen sinh"))
+    UC14(("Quan ly thi va diem"))
+    UC15(("Quan ly chuong trinh"))
+    UC16(("Import / export du lieu"))
+    UC17(("Gui thong bao"))
+    UC18(("Quan ly noi dung / cau hinh"))
+
+    Student --> UC01
+    Student --> UC02
+    Student --> UC03
+    Student --> UC04
+    Student --> UC05
+    Student --> UC06
+    Student --> UC07
+    Student --> UC08
+    Student --> UC09
+    Student --> UC10
+
+    Admin --> UC02
+    Admin --> UC10
+    Admin --> UC11
+    Admin --> UC12
+    Admin --> UC13
+    Admin --> UC14
+    Admin --> UC15
+    Admin --> UC16
+    Admin --> UC17
+    Admin --> UC18
+
+    UC05 --> VNPay
+    UC02 --> Email
+    UC10 --> Email
+    UC17 --> Email
+
+    classDef actor fill:#fff,stroke:#111,stroke-width:2px,color:#111;
+    classDef usecase fill:#fff,stroke:#111,stroke-width:1.5px,color:#111;
+    class Student,Admin,VNPay,Email actor;
+    class UC01,UC02,UC03,UC04,UC05,UC06,UC07,UC08,UC09,UC10,UC11,UC12,UC13,UC14,UC15,UC16,UC17,UC18 usecase;

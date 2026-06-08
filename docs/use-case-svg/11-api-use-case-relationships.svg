@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#333"/>
+    </marker>
+  </defs>
+  <style>
+    .oval { stroke: #222; stroke-width: 1.6; fill: #fff; }
+    .include { stroke: #333; stroke-width: 1.35; stroke-dasharray: 5 5; fill: none; marker-end: url(#arrow); }
+    .txt { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 15px; font-weight: 600; }
+    .rel { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 13px; }
+    .title { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 22px; font-weight: 700; }
+  </style>
+
+  <!-- Center -->
+  <ellipse cx="562" cy="397" rx="116" ry="42" class="oval"/>
+  <text x="562" y="402" text-anchor="middle" class="txt">Dang ky / Dang nhap</text>
+
+  <!-- Outer use cases -->
+  <ellipse cx="562" cy="103" rx="132" ry="42" class="oval"/>
+  <text x="562" y="108" text-anchor="middle" class="txt">Quan ly tai khoan</text>
+
+  <ellipse cx="766" cy="128" rx="132" ry="42" class="oval"/>
+  <text x="766" y="133" text-anchor="middle" class="txt">Lap ho so tuyen sinh</text>
+
+  <ellipse cx="930" cy="252" rx="132" ry="42" class="oval"/>
+  <text x="930" y="257" text-anchor="middle" class="txt">Thanh toan le phi</text>
+
+  <ellipse cx="962" cy="430" rx="148" ry="42" class="oval"/>
+  <text x="962" y="435" text-anchor="middle" class="txt">Dang ky / xem ket qua thi</text>
+
+  <ellipse cx="862" cy="614" rx="132" ry="42" class="oval"/>
+  <text x="862" y="619" text-anchor="middle" class="txt">Chon chuong trinh hoc</text>
+
+  <ellipse cx="640" cy="690" rx="118" ry="42" class="oval"/>
+  <text x="640" y="695" text-anchor="middle" class="txt">Nop ho so goc</text>
+
+  <ellipse cx="418" cy="690" rx="132" ry="42" class="oval"/>
+  <text x="418" y="695" text-anchor="middle" class="txt">Phuc khao / phong van</text>
+
+  <ellipse cx="212" cy="614" rx="140" ry="42" class="oval"/>
+  <text x="212" y="619" text-anchor="middle" class="txt">Xem hoa don / thong bao</text>
+
+  <ellipse cx="148" cy="430" rx="112" ry="42" class="oval"/>
+  <text x="148" y="435" text-anchor="middle" class="txt">Xem dashboard</text>
+
+  <ellipse cx="192" cy="252" rx="132" ry="42" class="oval"/>
+  <text x="192" y="257" text-anchor="middle" class="txt">Quan ly nguoi dung</text>
+
+  <ellipse cx="358" cy="128" rx="132" ry="42" class="oval"/>
+  <text x="358" y="133" text-anchor="middle" class="txt">Quan ly ho so tuyen sinh</text>
+
+  <ellipse cx="130" cy="343" rx="112" ry="42" class="oval"/>
+  <text x="130" y="348" text-anchor="middle" class="txt">Quan ly thi va diem</text>
+
+  <ellipse cx="1010" cy="343" rx="112" ry="42" class="oval"/>
+  <text x="1010" y="348" text-anchor="middle" class="txt">Quan ly chuong trinh</text>
+
+  <ellipse cx="328" cy="60" rx="132" ry="42" class="oval"/>
+  <text x="328" y="65" text-anchor="middle" class="txt">Import / export du lieu</text>
+
+  <ellipse cx="794" cy="60" rx="112" ry="42" class="oval"/>
+  <text x="794" y="65" text-anchor="middle" class="txt">Gui thong bao</text>
+
+  <ellipse cx="562" cy="750" rx="150" ry="34" class="oval"/>
+  <text x="562" y="755" text-anchor="middle" class="txt">Quan ly noi dung / cau hinh</text>
+
+  <!-- Include links toward login/auth center -->
+  <path d="M562 145 C562 214, 562 286, 562 355" class="include"/>
+  <text x="575" y="254" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M720 160 C660 226, 610 296, 578 357" class="include"/>
+  <text x="663" y="256" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M858 274 C780 303, 704 340, 671 373" class="include"/>
+  <text x="768" y="317" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M815 426 C760 423, 716 415, 679 407" class="include"/>
+  <text x="727" y="405" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M785 584 C720 532, 672 482, 626 430" class="include"/>
+  <text x="717" y="516" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M628 648 C612 575, 596 497, 576 438" class="include"/>
+  <text x="610" y="547" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M438 649 C471 578, 504 501, 540 437" class="include"/>
+  <text x="457" y="546" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M302 589 C374 532, 438 476, 511 427" class="include"/>
+  <text x="370" y="518" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M259 427 C324 423, 385 415, 447 406" class="include"/>
+  <text x="335" y="405" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M292 276 C361 308, 426 343, 462 374" class="include"/>
+  <text x="369" y="318" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M402 160 C463 228, 508 297, 543 357" class="include"/>
+  <text x="432" y="255" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M234 359 C308 369, 384 383, 446 393" class="include"/>
+  <text x="304" y="363" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M908 359 C822 369, 743 383, 678 393" class="include"/>
+  <text x="776" y="363" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M366 94 C428 175, 497 279, 543 357" class="include"/>
+  <text x="430" y="216" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M747 94 C685 175, 626 280, 579 357" class="include"/>
+  <text x="665" y="216" class="rel">&lt;&lt;include&gt;&gt;</text>
+
+  <path d="M562 716 C562 626, 562 527, 562 439" class="include"/>
+  <text x="575" y="593" class="rel">&lt;&lt;include&gt;&gt;</text>
+</svg>

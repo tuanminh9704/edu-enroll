@@ -64,10 +64,24 @@ export const createExamRoom = async (req: Request, res: Response): Promise<void>
   } catch (err) { errorResponse(res, (err as Error).message); }
 };
 
+export const autoCreateExamRooms = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await adminService.autoCreateExamRooms(req.params.id, req.body);
+    successResponse(res, result, 'Đã tạo phòng thi tự động');
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
 export const autoAssignExamRooms = async (req: Request, res: Response): Promise<void> => {
   try {
     const result = await adminService.autoAssignExamRooms(req.params.id);
     successResponse(res, result, 'Da xep phong thi tu dong');
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const setupExamProcess = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const result = await adminService.setupExamProcess(req.params.id, req.body);
+    successResponse(res, result, 'Đã setup phòng thi, SBD, số túi và mã phách');
   } catch (err) { errorResponse(res, (err as Error).message); }
 };
 
@@ -95,6 +109,13 @@ export const saveExamScoreDraft = async (req: Request, res: Response): Promise<v
   try {
     await adminService.saveExamScoreDraft(req.params.registrationId, req.body, req.user!.userId);
     successResponse(res, null, 'Đã lưu điểm nháp');
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const updateExamProcess = async (req: Request, res: Response): Promise<void> => {
+  try {
+    await adminService.updateExamProcess(req.params.registrationId, req.body, req.user!.userId);
+    successResponse(res, null, 'Đã lưu quy trình thi');
   } catch (err) { errorResponse(res, (err as Error).message); }
 };
 
@@ -134,6 +155,61 @@ export const deleteProgram = async (req: Request, res: Response): Promise<void> 
   try {
     await adminService.deleteProgram(req.params.id);
     successResponse(res, null, 'Vô hiệu hoá hệ đào tạo thành công');
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const getClasses = async (req: Request, res: Response): Promise<void> => {
+  try {
+    successResponse(res, await adminService.getClasses({
+      status: (req.query.status as string) || '',
+      language: (req.query.language as string) || '',
+      level: (req.query.level as string) || '',
+    }));
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const createClass = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const klass = await adminService.createClass(req.body, req.user!.userId);
+    successResponse(res, klass, 'Tạo lớp học thành công', 201);
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const updateClass = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const klass = await adminService.updateClass(req.params.id, req.body);
+    successResponse(res, klass, 'Cập nhật lớp học thành công');
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const getClassStudents = async (req: Request, res: Response): Promise<void> => {
+  try {
+    successResponse(res, await adminService.getClassStudents(req.params.id));
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const getEligibleClassEnrollments = async (req: Request, res: Response): Promise<void> => {
+  try {
+    successResponse(res, await adminService.getEligibleClassEnrollments(req.params.id, (req.query.search as string) || ''));
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const assignEnrollmentToClass = async (req: Request, res: Response): Promise<void> => {
+  try {
+    successResponse(res, await adminService.assignEnrollmentToClass(req.params.id, req.body.enrollment_id, req.user!.userId), 'Đã xếp học viên vào lớp');
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const autoAssignClassByLevel = async (req: Request, res: Response): Promise<void> => {
+  try {
+    successResponse(res, await adminService.autoAssignClassByLevel(req.params.id, req.user!.userId), 'Đã xếp lớp tự động theo cấp độ');
+  } catch (err) { errorResponse(res, (err as Error).message); }
+};
+
+export const removeEnrollmentFromClass = async (req: Request, res: Response): Promise<void> => {
+  try {
+    await adminService.removeEnrollmentFromClass(req.params.id, req.params.enrollmentId, req.user!.userId);
+    successResponse(res, null, 'Đã gỡ học viên khỏi lớp');
   } catch (err) { errorResponse(res, (err as Error).message); }
 };
 

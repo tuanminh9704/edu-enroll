@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Alert, Card, Table, Tag, Button, Modal, Form, Input, InputNumber, Select, Upload, message } from 'antd';
-import { DownloadOutlined, EditOutlined, FilterOutlined, SyncOutlined, UploadOutlined } from '@ant-design/icons';
+import { Alert, Card, Table, Tag, Button, Checkbox, Modal, Form, Input, InputNumber, Select, Upload, message } from 'antd';
+import { ApartmentOutlined, DownloadOutlined, EditOutlined, FilterOutlined, PlusOutlined, SyncOutlined, UploadOutlined } from '@ant-design/icons';
 import api from '../../services/api';
 import type { ApiResponse } from '../../types';
 import { downloadAdminCsv, importAdminCsv } from '../../utils/adminCsv';
@@ -10,17 +10,33 @@ interface ExamScheduleOption {
   title: string;
   language: string;
   exam_date: string;
+  location?: string;
   room?: string;
+}
+
+interface ExamRoom {
+  _id: string;
+  name: string;
+  location?: string;
+  capacity: number;
+  assigned_count: number;
 }
 
 interface ExamRegistration {
   _id: string;
-  user_id: string | { email: string; full_name: string };
+  user_id: string | { email?: string; full_name?: string } | null;
   schedule_id: string;
-  room_id?: string | { name?: string; location?: string };
+  room_id?: string | { name?: string; location?: string } | null;
+  subject_code?: string;
   exam_code: string;
   bag_number?: string;
   anonymous_code?: string;
+  attendance_status?: 'pending' | 'attended' | 'absent';
+  absence_report_number?: string;
+  absence_reason?: string;
+  exam_violation?: boolean;
+  violation_report_number?: string;
+  violation_note?: string;
   status: string;
   created_at: string;
   score: { score: number; level_passed: string; pass_status?: 'passed' | 'failed'; pass_threshold?: number; status: string } | null;
@@ -69,6 +85,27 @@ const calculatePreview = (score?: number, threshold = 50, language = 'english') 
   };
 };
 
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === 'object';
+
+const renderUser = (value: ExamRegistration['user_id']) => {
+  if (isRecord(value)) {
+    return (
+      <div>
+        <p className="font-medium">{String(value.full_name || 'Chưa có tên')}</p>
+        <p className="text-xs text-gray-400">{String(value.email || 'Chưa có email')}</p>
+      </div>
+    );
+  }
+
+  return <span className="font-mono text-xs">{value ? String(value) : 'Không tìm thấy tài khoản'}</span>;
+};
+
+const renderRoomName = (value: ExamRegistration['room_id']) => {
+  if (isRecord(value)) return String(value.name || '—');
+  return '—';
+};
+
 type ScorePageMode = 'entry' | 'view';
 
 export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMode }) {
@@ -79,12 +116,18 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
   const [registrations, setRegistrations] = useState<ExamRegistration[]>([]);
   const [loading, setLoading] = useState(false);
   const [scoreModal, setScoreModal] = useState(false);
+  const [roomModal, setRoomModal] = useState(false);
+  const [rooms, setRooms] = useState<ExamRoom[]>([]);
+  const [loadingRooms, setLoadingRooms] = useState(false);
   const [activeReg, setActiveReg] = useState<ExamRegistration | null>(null);
   const [form] = Form.useForm();
+  const [roomForm] = Form.useForm();
   const [saving, setSaving] = useState(false);
   const [schedulePassThreshold, setSchedulePassThreshold] = useState(50);
   const watchedScore = Form.useWatch('score', form);
   const watchedThreshold = Form.useWatch('pass_threshold', form);
+  const watchedAttendance = Form.useWatch('attendance_status', form);
+  const watchedViolation = Form.useWatch('exam_violation', form);
   const resultPreview = calculatePreview(
     typeof watchedScore === 'number' ? watchedScore : undefined,
     typeof watchedThreshold === 'number' ? watchedThreshold : 50,
@@ -112,14 +155,71 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
     }
   };
 
+  const getSelectedSchedule = () => schedules.find((schedule) => schedule._id === selectedSchedule);
+
+  const loadRooms = async (scheduleId = selectedSchedule) => {
+    if (!scheduleId) return;
+    setLoadingRooms(true);
+    try {
+      const res = await api.get<ApiResponse<ExamRoom[]>>(`/admin/exam-schedules/${scheduleId}/rooms`);
+      setRooms(res.data.data || []);
+    } catch {
+      message.error('Không thể tải danh sách phòng thi');
+    } finally {
+      setLoadingRooms(false);
+    }
+  };
+
+  const openRoomModal = () => {
+    if (!selectedSchedule) {
+      message.warning('Vui lòng chọn kỳ thi');
+      return;
+    }
+    roomForm.resetFields();
+    roomForm.setFieldsValue({ capacity: 25 });
+    setRoomModal(true);
+    loadRooms(selectedSchedule);
+  };
+
+  const handleCreateRoom = async () => {
+    if (!selectedSchedule) return;
+    const values = await roomForm.validateFields();
+    try {
+      await api.post(`/admin/exam-schedules/${selectedSchedule}/rooms`, values);
+      const assignRes = await api.post<ApiResponse<{ matched: number; assigned: number; skipped: number; full: boolean }>>(
+        `/admin/exam-schedules/${selectedSchedule}/auto-assign-rooms`,
+      );
+      await api.post(`/admin/exam-schedules/${selectedSchedule}/generate-bags`);
+      const result = assignRes.data.data;
+      message.success(
+        `Đã thêm phòng và xếp lại ${result.assigned}/${result.matched} thí sinh` +
+        `${result.full ? ', còn thí sinh chưa có phòng do thiếu sức chứa' : ''}.`,
+      );
+      roomForm.resetFields();
+      roomForm.setFieldsValue({ capacity: 25 });
+      loadRooms(selectedSchedule);
+      loadRegistrations(selectedSchedule);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Thêm phòng thi thất bại';
+      message.error(msg);
+    }
+  };
+
   const openScoreModal = (reg: ExamRegistration) => {
     setActiveReg(reg);
     form.setFieldsValue({
       score: reg.score?.score,
       level_passed: reg.score?.level_passed,
       pass_threshold: reg.score?.pass_threshold || 50,
+      subject_code: reg.subject_code || selectedLanguage,
       bag_number: reg.bag_number || '',
       anonymous_code: reg.anonymous_code || '',
+      attendance_status: reg.attendance_status || 'pending',
+      absence_report_number: reg.absence_report_number || '',
+      absence_reason: reg.absence_reason || '',
+      exam_violation: Boolean(reg.exam_violation),
+      violation_report_number: reg.violation_report_number || '',
+      violation_note: reg.violation_note || '',
     });
     setScoreModal(true);
   };
@@ -129,12 +229,20 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
     if (!activeReg) return;
     setSaving(true);
     try {
-      await api.post(`/admin/exam-registrations/${activeReg._id}/score-draft`, values);
-      message.success('Đã lưu điểm nháp. Học viên sẽ thấy kết quả sau khi đồng bộ.');
+      if (values.attendance_status === 'attended' && !values.exam_violation && typeof values.score === 'number') {
+        await api.post(`/admin/exam-registrations/${activeReg._id}/score-draft`, values);
+        message.success('Đã lưu điểm nháp. Học viên sẽ thấy kết quả sau khi đồng bộ.');
+      } else {
+        const processValues = { ...values };
+        delete processValues.score;
+        await api.post(`/admin/exam-registrations/${activeReg._id}/process`, processValues);
+        message.success('Đã lưu quy trình thi.');
+      }
       setScoreModal(false);
       loadRegistrations(selectedSchedule);
-    } catch {
-      message.error('Nhập điểm thất bại');
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Lưu thất bại';
+      message.error(msg);
     } finally {
       setSaving(false);
     }
@@ -163,12 +271,17 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
       cancelText: 'Huỷ',
       okButtonProps: { style: { backgroundColor: '#4f46e5' } },
       onOk: async () => {
-        const res = await api.post<ApiResponse<{ matched: number; synced: number; skipped: number }>>(
-          `/admin/exam-schedules/${selectedSchedule}/sync-scores`,
-          { pass_threshold: schedulePassThreshold },
-        );
-        message.success(`Đã đồng bộ ${res.data.data.synced}, bỏ qua ${res.data.data.skipped}/${res.data.data.matched}`);
-        loadRegistrations(selectedSchedule);
+        try {
+          const res = await api.post<ApiResponse<{ matched: number; synced: number; skipped: number }>>(
+            `/admin/exam-schedules/${selectedSchedule}/sync-scores`,
+            { pass_threshold: schedulePassThreshold },
+          );
+          message.success(`Đã đồng bộ ${res.data.data.synced}, bỏ qua ${res.data.data.skipped}/${res.data.data.matched}`);
+          loadRegistrations(selectedSchedule);
+        } catch (err: unknown) {
+          const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Đồng bộ điểm theo kỳ thi thất bại';
+          message.error(msg);
+        }
       },
     });
   };
@@ -188,13 +301,36 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
     }
   };
 
+  const handleSetupExamProcess = async () => {
+    if (!selectedSchedule) {
+      message.warning('Vui lòng chọn kỳ thi');
+      return;
+    }
+    try {
+      const res = await api.post<ApiResponse<{
+        rooms: { total_rooms: number; created: number };
+        assigned: { matched: number; assigned: number; skipped: number };
+        coded: { generated: number; bag_count: number };
+      }>>(`/admin/exam-schedules/${selectedSchedule}/setup-exam-process`, { room_capacity: 25, room_prefix: 'P' });
+      const result = res.data.data;
+      message.success(
+        `Setup xong: ${result.rooms.total_rooms} phòng, xếp ${result.assigned.assigned}/${result.assigned.matched}, ` +
+        `${result.coded.bag_count} túi, ${result.coded.generated} mã phách.`,
+      );
+      loadRegistrations(selectedSchedule);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Setup quy trình thi thất bại';
+      message.error(msg);
+    }
+  };
+
   const handleExport = async () => {
     if (!selectedSchedule) {
       message.warning('Vui lòng chọn kỳ thi');
       return;
     }
     try {
-      await downloadAdminCsv(`exam-scores?scheduleId=${selectedSchedule}`, 'exam-scores.csv');
+      await downloadAdminCsv(`exam-scores?scheduleId=${selectedSchedule}`, 'exam-process-scores.csv');
     } catch {
       message.error('Xuất dữ liệu thất bại');
     }
@@ -207,25 +343,24 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
     }
     try {
       const result = await importAdminCsv('exam-scores', file, { schedule_id: selectedSchedule }) as unknown as { imported: number; skipped: number; errors?: string[] };
-      message.success(`Đã nhập ${result.imported}, bỏ qua ${result.skipped}`);
+      message.success(`Đã nhập/cập nhật ${result.imported}, bỏ qua ${result.skipped}`);
       if (result.errors?.length) message.warning(result.errors.slice(0, 3).join('; '));
       loadRegistrations(selectedSchedule);
-    } catch {
-      message.error('Nhập điểm thất bại');
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Nhập dữ liệu thất bại';
+      message.error(msg);
     }
   };
+
+  const canEnterScore = (r: ExamRegistration) =>
+    Boolean(r.room_id && r.exam_code && !r.exam_code.startsWith('TMP') && r.bag_number && r.anonymous_code && r.attendance_status === 'attended' && !r.exam_violation);
 
   const columns = [
     {
       title: 'Thí sinh',
       dataIndex: 'user_id',
       key: 'user',
-      render: (v: ExamRegistration['user_id']) => typeof v === 'object' ? (
-        <div>
-          <p className="font-medium">{v.full_name}</p>
-          <p className="text-xs text-gray-400">{v.email}</p>
-        </div>
-      ) : <span className="font-mono text-xs">{String(v)}</span>,
+      render: renderUser,
     },
     {
       title: 'Trạng thái ĐK',
@@ -238,16 +373,36 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
       title: 'Phòng',
       key: 'room',
       width: 110,
-      render: (_: unknown, r: ExamRegistration) => typeof r.room_id === 'object' ? (r.room_id.name || '—') : '—',
+      render: (_: unknown, r: ExamRegistration) => renderRoomName(r.room_id),
     },
+    { title: 'SBD', dataIndex: 'exam_code', key: 'exam_code', width: 120, render: (v: string) => v?.startsWith('TMP') ? <span className="text-gray-300">Chưa đánh</span> : v },
+    { title: 'Môn', dataIndex: 'subject_code', key: 'subject_code', width: 90, render: (v: string) => v || <span className="text-gray-300">—</span> },
     { title: 'Số túi', dataIndex: 'bag_number', key: 'bag_number', width: 90, render: (v: string) => v || <span className="text-gray-300">—</span> },
     { title: 'Mã phách', dataIndex: 'anonymous_code', key: 'anonymous_code', width: 110, render: (v: string) => v || <span className="text-gray-300">—</span> },
     {
-      title: 'Ngày đăng ký',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      width: 120,
-      render: (v: string) => v ? new Date(v).toLocaleDateString('vi-VN') : '—',
+      title: 'Dự thi',
+      dataIndex: 'attendance_status',
+      key: 'attendance_status',
+      width: 110,
+      render: (v: ExamRegistration['attendance_status']) => {
+        if (v === 'attended') return <Tag color="green">Có thi</Tag>;
+        if (v === 'absent') return <Tag color="red">Vắng thi</Tag>;
+        return <Tag>Chờ BB</Tag>;
+      },
+    },
+    {
+      title: 'BB vắng',
+      dataIndex: 'absence_report_number',
+      key: 'absence_report_number',
+      width: 110,
+      render: (v: string) => v || <span className="text-gray-300">—</span>,
+    },
+    {
+      title: 'VPQC',
+      dataIndex: 'exam_violation',
+      key: 'exam_violation',
+      width: 90,
+      render: (v: boolean, r: ExamRegistration) => v ? <Tag color="red">{r.violation_report_number || 'Có'}</Tag> : <Tag color="green">Không</Tag>,
     },
     {
       title: 'Điểm',
@@ -293,7 +448,7 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
         <div className="flex gap-2">
           {!isViewMode && (
             <Button size="small" icon={<EditOutlined />} type="primary" onClick={() => openScoreModal(r)} style={{ backgroundColor: '#4f46e5' }}>
-              {r.score ? 'Sửa' : 'Nhập'}
+              {r.score ? 'Sửa' : 'Quy trình/điểm'}
             </Button>
           )}
           {isViewMode && (
@@ -338,6 +493,12 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
             </div>
           ) : (
             <>
+              <Button disabled={!selectedSchedule} icon={<ApartmentOutlined />} onClick={openRoomModal}>
+                Phòng thi
+              </Button>
+              <Button disabled={!selectedSchedule} onClick={handleSetupExamProcess}>
+                Setup phòng/SBD/túi/phách
+              </Button>
               <Button disabled={!selectedSchedule} onClick={handleGenerateBags}>
                 Đánh số túi/mã phách
               </Button>
@@ -349,12 +510,12 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
                   return false;
                 }}
               >
-                <Button icon={<UploadOutlined />} disabled={!selectedSchedule}>Nhập CSV</Button>
+                <Button icon={<UploadOutlined />} disabled={!selectedSchedule}>Nhập Excel/CSV</Button>
               </Upload>
             </>
           )}
           <Button icon={<DownloadOutlined />} disabled={!selectedSchedule} onClick={handleExport}>
-            Xuất CSV
+            Xuất Excel/CSV
           </Button>
           {isViewMode && (
             <Button icon={<SyncOutlined />} disabled={!selectedSchedule} onClick={handleSyncAll}>
@@ -370,13 +531,14 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
           columns={columns}
           rowKey="_id"
           loading={loading}
+          scroll={{ x: 1450 }}
           locale={{ emptyText: selectedSchedule ? 'Chưa có đăng ký thi' : 'Chọn kỳ thi để xem danh sách' }}
           pagination={{ pageSize: 20, showTotal: (t) => `${t} thí sinh` }}
         />
       </Card>
 
       <Modal
-        title="Nhập điểm riêng"
+        title="Quy trình thi và nhập điểm"
         open={scoreModal}
         onOk={handleSaveScore}
         onCancel={() => setScoreModal(false)}
@@ -385,9 +547,27 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
         okButtonProps={{ loading: saving, style: { backgroundColor: '#4f46e5' } }}
       >
         <Form form={form} layout="vertical" className="mt-4">
-          <Form.Item name="score" label="Điểm số (0 - 100)" rules={[{ required: true, message: 'Nhập điểm' }]}>
-            <InputNumber min={0} max={100} className="w-full" size="large" />
-          </Form.Item>
+          <Alert
+            showIcon
+            type={activeReg && canEnterScore(activeReg) ? 'success' : 'info'}
+            className="mb-4"
+            message="Điểm chỉ được nhập khi đã xếp phòng, có SBD, số túi, mã phách, có thi và không VPQC."
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <Form.Item name="subject_code" label="Môn thi">
+              <Input placeholder="VD: english" size="large" />
+            </Form.Item>
+            <Form.Item name="attendance_status" label="Trạng thái dự thi" rules={[{ required: true, message: 'Chọn trạng thái dự thi' }]}>
+              <Select
+                size="large"
+                options={[
+                  { value: 'pending', label: 'Chờ biên bản' },
+                  { value: 'attended', label: 'Có thi' },
+                  { value: 'absent', label: 'Vắng thi' },
+                ]}
+              />
+            </Form.Item>
+          </div>
           <div className="grid grid-cols-2 gap-3">
             <Form.Item name="bag_number" label="Số túi">
               <Input placeholder="VD: T01" size="large" />
@@ -396,6 +576,39 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
               <Input placeholder="VD: MP001" size="large" />
             </Form.Item>
           </div>
+          {watchedAttendance === 'absent' && (
+            <div className="grid grid-cols-2 gap-3">
+              <Form.Item name="absence_report_number" label="Số biên bản vắng thi" rules={[{ required: true, message: 'Nhập số biên bản vắng thi' }]}>
+                <Input placeholder="VD: BBVT-001" size="large" />
+              </Form.Item>
+              <Form.Item name="absence_reason" label="Lý do vắng">
+                <Input placeholder="Lý do vắng thi" size="large" />
+              </Form.Item>
+            </div>
+          )}
+          <Form.Item name="exam_violation" valuePropName="checked">
+            <Checkbox>Thí sinh có biên bản vi phạm quy chế thi (VPQC)</Checkbox>
+          </Form.Item>
+          {watchedViolation && (
+            <div className="grid grid-cols-2 gap-3">
+              <Form.Item name="violation_report_number" label="Số biên bản VPQC" rules={[{ required: true, message: 'Nhập số biên bản VPQC' }]}>
+                <Input placeholder="VD: BBVPQC-001" size="large" />
+              </Form.Item>
+              <Form.Item name="violation_note" label="Ghi chú VPQC">
+                <Input placeholder="Nội dung vi phạm" size="large" />
+              </Form.Item>
+            </div>
+          )}
+          <Form.Item name="score" label="Điểm số (0 - 100)">
+            <InputNumber
+              min={0}
+              max={100}
+              className="w-full"
+              size="large"
+              disabled={watchedAttendance !== 'attended' || Boolean(watchedViolation)}
+              placeholder={watchedAttendance !== 'attended' || watchedViolation ? 'Không nhập điểm cho thí sinh vắng/VPQC' : 'Nhập điểm'}
+            />
+          </Form.Item>
           <Form.Item name="pass_threshold" label="Ngưỡng đỗ" initialValue={50} rules={[{ required: true, message: 'Nhập ngưỡng đỗ' }]}>
             <InputNumber min={0} max={100} className="w-full" size="large" />
           </Form.Item>
@@ -416,6 +629,77 @@ export default function AdminExamScores({ mode = 'entry' }: { mode?: ScorePageMo
             />
           )}
         </Form>
+      </Modal>
+
+      <Modal
+        title="Phòng thi của kỳ thi"
+        open={roomModal}
+        onCancel={() => setRoomModal(false)}
+        footer={null}
+        width={860}
+      >
+        <div className="mt-2 space-y-4">
+          {getSelectedSchedule() && (
+            <div className="rounded-lg border border-gray-100 bg-gray-50 p-3">
+              <p className="font-medium text-gray-900">{getSelectedSchedule()?.title}</p>
+              <p className="mt-1 text-sm text-gray-500">
+                {new Date(getSelectedSchedule()!.exam_date).toLocaleDateString('vi-VN')}
+                {getSelectedSchedule()?.location ? ` - ${getSelectedSchedule()?.location}` : ''}
+              </p>
+              <p className="mt-1 text-sm text-gray-500">
+                Tổng sức chứa phòng: {rooms.reduce((sum, room) => sum + room.capacity, 0)} / {registrations.length} thí sinh trong kỳ thi
+              </p>
+            </div>
+          )}
+
+          {rooms.reduce((sum, room) => sum + room.capacity, 0) < registrations.length && (
+            <Alert
+              showIcon
+              type="warning"
+              message="Tổng sức chứa phòng thi đang nhỏ hơn số thí sinh. Một số thí sinh có thể chưa được xếp phòng."
+            />
+          )}
+
+          <Form form={roomForm} layout="inline" className="gap-2">
+            <Form.Item name="name" rules={[{ required: true, message: 'Nhập tên phòng' }]}>
+              <Input placeholder="Tên phòng, VD: P02" />
+            </Form.Item>
+            <Form.Item name="capacity" rules={[{ required: true, message: 'Nhập sức chứa' }]}>
+              <InputNumber min={1} max={500} placeholder="Sức chứa" />
+            </Form.Item>
+            <Form.Item name="location">
+              <Input placeholder="Địa điểm/phòng học" />
+            </Form.Item>
+            <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateRoom} style={{ backgroundColor: '#4f46e5' }}>
+              Thêm phòng & xếp lại
+            </Button>
+          </Form>
+
+          <Table
+            dataSource={rooms}
+            rowKey="_id"
+            loading={loadingRooms}
+            pagination={false}
+            columns={[
+              { title: 'Phòng', dataIndex: 'name', key: 'name' },
+              { title: 'Địa điểm', dataIndex: 'location', key: 'location', render: (v: string) => v || getSelectedSchedule()?.location || '—' },
+              { title: 'Sức chứa', dataIndex: 'capacity', key: 'capacity', width: 100 },
+              { title: 'Đã xếp', dataIndex: 'assigned_count', key: 'assigned_count', width: 100 },
+              {
+                title: 'Trạng thái',
+                key: 'status',
+                width: 130,
+                render: (_: unknown, room: ExamRoom) => room.assigned_count >= room.capacity
+                  ? <Tag color="orange">Đủ phòng</Tag>
+                  : <Tag color="green">Còn {room.capacity - room.assigned_count}</Tag>,
+              },
+            ]}
+          />
+
+          <p className="text-sm text-gray-500">
+            Khi thêm phòng, hệ thống sẽ tự động xếp lại thí sinh theo giới hạn sức chứa từng phòng, đánh lại SBD, số túi theo phòng và mã phách riêng cho từng học viên.
+          </p>
+        </div>
       </Modal>
     </div>
   );

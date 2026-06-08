@@ -1,0 +1,27 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart TD
+    Start([Bat dau])
+    VisitHome[Nguoi dung truy cap trang chu]
+    RequestContent[Frontend yeu cau banner va tin tuc cong khai]
+    QueryContent[He thong truy van banner active va tin tuc published]
+    HasContent{Co du lieu cong khai?}
+    ShowContent[Hien thi banner va tin tuc]
+    ShowDefault[Hien thi noi dung mac dinh hoac danh sach rong]
+    OpenNews{Nguoi dung mo chi tiet tin tuc?}
+    QueryNews[He thong truy van tin tuc theo slug]
+    NewsPublished{Tin tuc ton tai va da published?}
+    ShowNews[Hien thi chi tiet tin tuc]
+    ShowNotFound[Thong bao tin tuc khong ton tai]
+    ApiError{API hoac CSDL loi?}
+    ShowError[Hien thi thong bao khong tai duoc noi dung]
+    End([Ket thuc])
+
+    Start --> VisitHome --> RequestContent --> ApiError
+    ApiError -- Co --> ShowError --> End
+    ApiError -- Khong --> QueryContent --> HasContent
+    HasContent -- Co --> ShowContent --> OpenNews
+    HasContent -- Khong --> ShowDefault --> OpenNews
+    OpenNews -- Khong --> End
+    OpenNews -- Co --> QueryNews --> NewsPublished
+    NewsPublished -- Co --> ShowNews --> End
+    NewsPublished -- Khong --> ShowNotFound --> End

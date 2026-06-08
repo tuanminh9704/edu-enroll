@@ -157,6 +157,30 @@ export default function AdminExamSchedules() {
     }
   };
 
+  const handleAutoCreateRooms = async (schedule: ExamSchedule) => {
+    Modal.confirm({
+      title: 'Tạo phòng thi tự động?',
+      content: 'Hệ thống sẽ tạo các phòng riêng cho kỳ thi này theo sức chứa 25 học viên/phòng, đủ bao phủ số chỗ tối đa của kỳ thi.',
+      okText: 'Tạo phòng',
+      cancelText: 'Huỷ',
+      okButtonProps: { style: { backgroundColor: '#4f46e5' } },
+      onOk: async () => {
+        try {
+          const res = await api.post<ApiResponse<{ created: number; total_rooms: number; total_capacity: number }>>(
+            `/admin/exam-schedules/${schedule._id}/auto-create-rooms`,
+            { room_capacity: 25, room_prefix: 'P' },
+          );
+          const result = res.data.data;
+          message.success(`Đã tạo thêm ${result.created} phòng. Tổng ${result.total_rooms} phòng, sức chứa ${result.total_capacity}.`);
+          if (roomModal && activeSchedule?._id === schedule._id) loadRooms(schedule);
+        } catch (err: unknown) {
+          const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Tạo phòng tự động thất bại';
+          message.error(msg);
+        }
+      },
+    });
+  };
+
   const handleAutoAssignRooms = async (schedule: ExamSchedule) => {
     Modal.confirm({
       title: 'Xếp phòng và đánh số báo danh tự động?',
@@ -171,6 +195,35 @@ export default function AdminExamSchedules() {
         const result = res.data.data;
         message.success(`Đã xếp ${result.assigned}/${result.matched} thí sinh${result.full ? ', còn thí sinh chưa có phòng do hết chỗ' : ''}`);
         load();
+      },
+    });
+  };
+
+  const handleSetupExamProcess = async (schedule: ExamSchedule) => {
+    Modal.confirm({
+      title: 'Setup toàn bộ quy trình thi?',
+      content: 'Hệ thống sẽ tạo phòng nếu thiếu, xếp thí sinh vào phòng, đánh SBD, đánh số túi theo phòng và sinh mã phách riêng cho từng học viên.',
+      okText: 'Setup quy trình',
+      cancelText: 'Huỷ',
+      okButtonProps: { style: { backgroundColor: '#4f46e5' } },
+      onOk: async () => {
+        try {
+          const res = await api.post<ApiResponse<{
+            rooms: { created: number; total_rooms: number; total_capacity: number };
+            assigned: { matched: number; assigned: number; skipped: number; full: boolean };
+            coded: { matched: number; generated: number; bag_count: number };
+          }>>(`/admin/exam-schedules/${schedule._id}/setup-exam-process`, { room_capacity: 25, room_prefix: 'P' });
+          const result = res.data.data;
+          message.success(
+            `Phòng: ${result.rooms.total_rooms}, xếp ${result.assigned.assigned}/${result.assigned.matched}, ` +
+            `sinh ${result.coded.generated} mã phách và ${result.coded.bag_count} số túi.`,
+          );
+          load();
+          if (roomModal && activeSchedule?._id === schedule._id) loadRooms(schedule);
+        } catch (err: unknown) {
+          const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Setup quy trình thi thất bại';
+          message.error(msg);
+        }
       },
     });
   };
@@ -238,12 +291,36 @@ export default function AdminExamSchedules() {
       cancelText: 'Huỷ',
       okButtonProps: { style: { backgroundColor: '#4f46e5' } },
       onOk: async () => {
-        const res = await api.post<ApiResponse<{ matched: number; assigned: number; moved: number; skipped: number; full: boolean }>>(
-          `/admin/exam-schedules/${schedule._id}/assign-by-date`,
-        );
-        const result = res.data.data;
-        message.success(`Đã thêm ${result.assigned}, chuyển lịch ${result.moved}, bỏ qua ${result.skipped}/${result.matched}${result.full ? ' (đã hết chỗ)' : ''}`);
-        load();
+        try {
+          const res = await api.post<ApiResponse<{
+            matched: number;
+            assigned: number;
+            moved: number;
+            already_assigned?: number;
+            skipped: number;
+            full: boolean;
+            remaining_slots?: number;
+          }>>(`/admin/exam-schedules/${schedule._id}/assign-by-date`);
+          const result = res.data.data;
+          const text = [
+            `Thêm mới ${result.assigned}`,
+            `chuyển lịch ${result.moved}`,
+            `đã có sẵn ${result.already_assigned || 0}`,
+            `bỏ qua ${result.skipped}/${result.matched}`,
+            `còn ${result.remaining_slots ?? 0} chỗ`,
+          ].join(', ');
+          if (result.matched === 0) {
+            message.warning('Không có hồ sơ nào đã chọn ngày thi này và đủ điều kiện.');
+          } else if (result.full) {
+            message.warning(`${text}. Lịch thi đã hết chỗ.`);
+          } else {
+            message.success(text);
+          }
+          load();
+        } catch (err: unknown) {
+          const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Thêm thí sinh theo ngày thi thất bại';
+          message.error(msg);
+        }
       },
     });
   };
@@ -294,6 +371,9 @@ export default function AdminExamSchedules() {
         <div className="flex flex-wrap gap-2">
           <Button size="small" icon={<HomeOutlined />} onClick={() => openRooms(r)}>
             Phòng thi
+          </Button>
+          <Button size="small" onClick={() => handleSetupExamProcess(r)}>
+            Setup thi
           </Button>
           <Button size="small" icon={<UserAddOutlined />} onClick={() => openAssign(r)}>
             Thêm thí sinh
@@ -404,6 +484,15 @@ export default function AdminExamSchedules() {
               <p className="mt-1 text-sm text-gray-500">
                 {new Date(activeSchedule.exam_date).toLocaleDateString('vi-VN')} - {activeSchedule.location}
               </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => handleAutoCreateRooms(activeSchedule)}>
+                Tạo phòng tự động
+              </Button>
+              <Button type="primary" onClick={() => handleSetupExamProcess(activeSchedule)} style={{ backgroundColor: '#4f46e5' }}>
+                Setup phòng/SBD/túi/phách
+              </Button>
             </div>
 
             <Form form={roomForm} layout="inline" className="gap-2">

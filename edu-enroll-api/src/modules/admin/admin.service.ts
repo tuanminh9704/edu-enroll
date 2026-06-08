@@ -12,6 +12,7 @@ import { Invoice } from '../../models/Invoice';
 import { Banner } from '../../models/Banner';
 import { News } from '../../models/News';
 import { SystemConfig } from '../../models/SystemConfig';
+import { CourseClass } from '../../models/CourseClass';
 import { notificationService } from '../notifications/notification.service';
 import mongoose from 'mongoose';
 import { calculateExamResult } from '../../utils/examResult';
@@ -20,6 +21,45 @@ import { parseBoolean, parseCsv, parseNumber, toCsv } from '../../utils/csv';
 import { FIXED_EXAM_DATES, isFixedExamDate, toExamDateKey } from '../../constants/exam';
 
 const EXAM_DATE_TIME_ZONE = 'Asia/Ho_Chi_Minh';
+
+const PROGRAM_MIN_SCORE_BY_LEVEL: Record<string, number> = {
+  A1: 0,
+  A2: 40,
+  B1: 55,
+  B2: 70,
+  C1: 85,
+  IELTS: 70,
+  TOEIC: 55,
+  N5: 0,
+  N4: 55,
+  N3: 70,
+  N2: 85,
+  N1: 90,
+  K1: 0,
+  K2: 50,
+  K3: 75,
+  TOPIK: 75,
+  HSK1: 0,
+  HSK3: 50,
+  HSK5: 75,
+  FR_A1: 0,
+  FR_A2: 45,
+  FR_B1: 65,
+  FR_B2: 80,
+};
+
+const normalizeProgramInput = (data: Record<string, unknown>) => {
+  const levelCode = getStringValue(data.level_code);
+  const normalized = { ...data };
+  if (levelCode) {
+    normalized.level_code = levelCode;
+    normalized.level = getStringValue(data.level) || levelCode;
+    if (data.min_score === undefined || data.min_score === null || data.min_score === '') {
+      normalized.min_score = PROGRAM_MIN_SCORE_BY_LEVEL[levelCode] ?? 0;
+    }
+  }
+  return normalized;
+};
 
 const formatDateKey = (date: Date, timeZone = EXAM_DATE_TIME_ZONE): string => {
   try {
@@ -68,6 +108,15 @@ const createSeatNumber = (language: string, examDate: Date, index: number): stri
   return `${prefix}${dateKey}${String(index).padStart(3, '0')}`;
 };
 
+const createRoomCode = (roomName: string, index: number): string => {
+  const normalized = roomName
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .toUpperCase();
+  return normalized || `P${String(index).padStart(2, '0')}`;
+};
+
 const createTemporaryExamCode = (language: string, index = 0): string => {
   const prefix = (language || 'XX').toUpperCase().substring(0, 2);
   return `TMP${prefix}${Date.now().toString().slice(-6)}${String(index).padStart(2, '0')}`;
@@ -81,6 +130,47 @@ const getImportRows = (file?: Express.Multer.File): Record<string, string>[] => 
 const getStringValue = (value: unknown): string | undefined => {
   const text = String(value ?? '').trim();
   return text || undefined;
+};
+
+const getObjectIdString = (value: unknown): string => {
+  if (!value) return '';
+  if (typeof value === 'string') return value;
+  if (value instanceof mongoose.Types.ObjectId) return value.toString();
+  const maybe = value as { _id?: unknown; toString?: () => string };
+  if (maybe._id) return getObjectIdString(maybe._id);
+  return maybe.toString ? maybe.toString() : '';
+};
+
+const getFirstStringValue = (row: Record<string, unknown>, keys: string[]): string | undefined => {
+  for (const key of keys) {
+    const value = getStringValue(row[key]);
+    if (value) return value;
+  }
+  return undefined;
+};
+
+const normalizeAttendanceStatus = (value: unknown): 'pending' | 'attended' | 'absent' | undefined => {
+  const text = String(value ?? '').trim().toLowerCase();
+  if (!text) return undefined;
+  if (['attended', 'present', 'co thi', 'có thi', 'du thi', 'dự thi', '1', 'yes', 'true'].includes(text)) return 'attended';
+  if (['absent', 'vang', 'vắng', 'vang thi', 'vắng thi', '0', 'no', 'false'].includes(text)) return 'absent';
+  if (['pending', 'chua xac nhan', 'chưa xác nhận', 'cho xu ly', 'chờ xử lý'].includes(text)) return 'pending';
+  return undefined;
+};
+
+const hasScoreValue = (value: unknown): boolean => String(value ?? '').trim() !== '';
+
+const createClassCode = (language: string, levelCode: string): string => {
+  const lang = (language || 'XX').toUpperCase().substring(0, 2);
+  const level = (levelCode || 'LV').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  return `${lang}-${level}-${Date.now().toString().slice(-6)}`;
+};
+
+type CourseClassStatus = 'open' | 'full' | 'closed' | 'completed';
+
+const normalizeClassStatus = (value: unknown, fallback: CourseClassStatus = 'open'): CourseClassStatus => {
+  const text = String(value ?? '').trim();
+  return ['open', 'full', 'closed', 'completed'].includes(text) ? text as CourseClassStatus : fallback;
 };
 
 export class AdminService {
@@ -112,6 +202,22 @@ export class AdminService {
   private describeRoom(room: { name?: string; location?: string } | null) {
     if (!room) return '';
     return ` tai phong ${room.name}${room.location ? ` (${room.location})` : ''}`;
+  }
+
+  private assertCanEnterExamScore(registration: {
+    room_id?: unknown;
+    exam_code?: string;
+    bag_number?: string;
+    anonymous_code?: string;
+    attendance_status?: string;
+    exam_violation?: boolean;
+  }) {
+    if (!registration.room_id) throw new Error('Cần xếp phòng thi trước khi nhập điểm');
+    if (!registration.exam_code || registration.exam_code.startsWith('TMP')) throw new Error('Cần đánh số báo danh trước khi nhập điểm');
+    if (!registration.bag_number) throw new Error('Cần đánh số túi bài thi trước khi nhập điểm');
+    if (!registration.anonymous_code) throw new Error('Cần nhập mã phách trước khi nhập điểm');
+    if (registration.attendance_status !== 'attended') throw new Error('Chỉ thí sinh có thi mới được nhập điểm');
+    if (registration.exam_violation) throw new Error('Thí sinh có biên bản VPQC không được nhập điểm');
   }
 
   async getStats() {
@@ -282,6 +388,51 @@ export class AdminService {
     });
   }
 
+  async autoCreateExamRooms(scheduleId: string, data: Record<string, unknown> = {}) {
+    const schedule = await ExamSchedule.findById(scheduleId);
+    if (!schedule) throw new Error('Lịch thi không tồn tại');
+
+    const roomCapacity = Math.max(1, Number(data.room_capacity || data.capacity || 25));
+    const roomPrefix = String(data.room_prefix || 'P').trim() || 'P';
+    const targetSlots = Math.max(schedule.max_slots || 0, schedule.registered_slots || 0);
+    if (targetSlots < 1) throw new Error('Kỳ thi chưa cấu hình số chỗ tối đa');
+
+    const existingRooms = await ExamRoom.find({ schedule_id: schedule._id }).sort({ created_at: 1 });
+    const existingCapacity = existingRooms.reduce((sum, room) => sum + room.capacity, 0);
+    const missingSlots = Math.max(targetSlots - existingCapacity, 0);
+    const roomsToCreate = Math.ceil(missingSlots / roomCapacity);
+
+    const created = [];
+    const existingNames = new Set(existingRooms.map((room) => room.name));
+    let nextRoomNumber = 1;
+    for (let i = 0; i < roomsToCreate; i += 1) {
+      let name = `${roomPrefix}${String(nextRoomNumber).padStart(2, '0')}`;
+      while (existingNames.has(name)) {
+        nextRoomNumber += 1;
+        name = `${roomPrefix}${String(nextRoomNumber).padStart(2, '0')}`;
+      }
+      existingNames.add(name);
+      nextRoomNumber += 1;
+      const room = await ExamRoom.create({
+        schedule_id: schedule._id,
+        name,
+        capacity: roomCapacity,
+        location: String(data.location || schedule.location || '').trim() || undefined,
+      });
+      created.push(room);
+    }
+
+    return {
+      schedule_id: scheduleId,
+      target_slots: targetSlots,
+      room_capacity: roomCapacity,
+      existing_rooms: existingRooms.length,
+      created: created.length,
+      total_rooms: existingRooms.length + created.length,
+      total_capacity: existingCapacity + (created.length * roomCapacity),
+    };
+  }
+
   async autoAssignExamRooms(scheduleId: string) {
     const schedule = await ExamSchedule.findById(scheduleId);
     if (!schedule) throw new Error('Lich thi khong ton tai');
@@ -315,6 +466,8 @@ export class AdminService {
       await room.save();
       registration.room_id = room._id as mongoose.Types.ObjectId;
       registration.exam_code = createSeatNumber(schedule.language, schedule.exam_date, index + 1);
+      registration.bag_number = undefined;
+      registration.anonymous_code = undefined;
       await registration.save();
       assigned += 1;
     }
@@ -341,13 +494,16 @@ export class AdminService {
     const schedule = await ExamSchedule.findById(scheduleId);
     if (!schedule) throw new Error('Lich thi khong ton tai');
 
+    const rooms = await ExamRoom.find({ schedule_id: new mongoose.Types.ObjectId(scheduleId) }).sort({ created_at: 1, name: 1 }).lean();
+    const roomOrder = new Map(rooms.map((room, index) => [room._id.toString(), { index: index + 1, name: room.name }]));
+
     const registrations = await ExamRegistration.find({
       schedule_id: new mongoose.Types.ObjectId(scheduleId),
       status: 'confirmed',
       room_id: { $exists: true, $ne: null },
     })
       .populate('room_id', 'name')
-      .sort({ room_id: 1, exam_code: 1, created_at: 1 });
+      .sort({ exam_code: 1, created_at: 1 });
 
     if (registrations.length === 0) throw new Error('Can xep phong truoc khi danh so tui va ma phach');
 
@@ -355,19 +511,117 @@ export class AdminService {
     const dateKey = toExamDateKey(schedule.exam_date).replace(/-/g, '');
     let generated = 0;
     const roomCounters = new Map<string, number>();
+    const orderedRegistrations = registrations.sort((a, b) => {
+      const aRoom = getObjectIdString(a.room_id);
+      const bRoom = getObjectIdString(b.room_id);
+      const aOrder = roomOrder.get(aRoom)?.index ?? 9999;
+      const bOrder = roomOrder.get(bRoom)?.index ?? 9999;
+      return aOrder - bOrder || String(a.exam_code || '').localeCompare(String(b.exam_code || ''));
+    });
 
-    for (const registration of registrations) {
-      const roomId = registration.room_id?.toString() || 'NO_ROOM';
+    for (const registration of orderedRegistrations) {
+      const roomId = getObjectIdString(registration.room_id);
+      const roomMeta = roomOrder.get(roomId);
+      if (!roomMeta) throw new Error('Phòng thi không thuộc kỳ thi này');
       const next = (roomCounters.get(roomId) || 0) + 1;
       roomCounters.set(roomId, next);
-      const roomIndex = Array.from(roomCounters.keys()).indexOf(roomId) + 1;
-      registration.bag_number = `${prefix}-${dateKey}-P${String(roomIndex).padStart(2, '0')}`;
+      const roomIndex = roomMeta.index;
+      const roomCode = createRoomCode(roomMeta.name, roomIndex);
+      registration.subject_code = registration.subject_code || schedule.language;
+      registration.bag_number = `${prefix}-${dateKey}-${roomCode}`;
       registration.anonymous_code = `${prefix}${dateKey}${String(roomIndex).padStart(2, '0')}${String(next).padStart(3, '0')}`;
       await registration.save();
       generated += 1;
     }
 
-    return { matched: registrations.length, generated };
+    return {
+      matched: registrations.length,
+      generated,
+      rooms: roomCounters.size,
+      bag_count: roomCounters.size,
+    };
+  }
+
+  async setupExamProcess(scheduleId: string, data: Record<string, unknown> = {}) {
+    const rooms = await this.autoCreateExamRooms(scheduleId, data);
+    const assigned = await this.autoAssignExamRooms(scheduleId);
+    const coded = await this.generateExamBagsAndAnonymousCodes(scheduleId);
+    return {
+      rooms,
+      assigned,
+      coded,
+    };
+  }
+
+  async updateExamProcess(registrationId: string, data: Record<string, unknown>, adminId?: string) {
+    const reg = await ExamRegistration.findById(registrationId);
+    if (!reg) throw new Error('Đăng ký thi không tồn tại');
+    if (!['confirmed', 'absent'].includes(reg.status)) throw new Error('Chỉ có thể cập nhật quy trình cho thí sinh đã xác nhận thi');
+
+    const oldValue = [
+      reg.subject_code,
+      reg.bag_number,
+      reg.anonymous_code,
+      reg.attendance_status,
+      reg.exam_violation ? 'VPQC' : '',
+    ].filter(Boolean).join('/');
+
+    const subjectCode = getFirstStringValue(data, ['subject_code', 'subject', 'mon_thi', 'môn_thi']);
+    const bagNumber = getFirstStringValue(data, ['bag_number', 'so_tui', 'số_túi']);
+    const anonymousCode = getFirstStringValue(data, ['anonymous_code', 'ma_phach', 'mã_phách']);
+    const attendanceStatus = normalizeAttendanceStatus(getFirstStringValue(data, ['attendance_status', 'co_thi', 'có_thi', 'du_thi', 'dự_thi']));
+    const absenceReportNumber = getFirstStringValue(data, ['absence_report_number', 'bien_ban_vang_thi', 'biên_bản_vắng_thi']);
+    const absenceReason = getFirstStringValue(data, ['absence_reason', 'ly_do_vang', 'lý_do_vắng']);
+    const violationReportNumber = getFirstStringValue(data, ['violation_report_number', 'bien_ban_vpqc', 'biên_bản_vpqc']);
+    const violationNote = getFirstStringValue(data, ['violation_note', 'ghi_chu_vpqc', 'ghi_chú_vpqc']);
+
+    if (subjectCode !== undefined) reg.subject_code = subjectCode;
+    if (bagNumber !== undefined) reg.bag_number = bagNumber;
+    if (anonymousCode !== undefined) reg.anonymous_code = anonymousCode;
+    if (attendanceStatus !== undefined) {
+      reg.attendance_status = attendanceStatus;
+      if (attendanceStatus === 'absent') reg.status = 'absent';
+      if (attendanceStatus === 'attended' && reg.status === 'absent') reg.status = 'confirmed';
+    }
+    if (absenceReportNumber !== undefined) reg.absence_report_number = absenceReportNumber;
+    if (absenceReason !== undefined) reg.absence_reason = absenceReason;
+    if (data.exam_violation !== undefined || data.vpqc !== undefined || data.vi_pham_quy_che !== undefined || data['vi_phạm_quy_chế'] !== undefined) {
+      reg.exam_violation = parseBoolean(data.exam_violation ?? data.vpqc ?? data.vi_pham_quy_che ?? data['vi_phạm_quy_chế'], false);
+    }
+    if (violationReportNumber !== undefined) reg.violation_report_number = violationReportNumber;
+    if (violationNote !== undefined) reg.violation_note = violationNote;
+
+    if (reg.attendance_status === 'absent' && !reg.absence_report_number) {
+      throw new Error('Thí sinh vắng thi cần có số biên bản vắng thi');
+    }
+    if (reg.exam_violation && !reg.violation_report_number) {
+      throw new Error('Thí sinh VPQC cần có số biên bản vi phạm quy chế');
+    }
+
+    await reg.save();
+
+    if (adminId) {
+      await EnrollmentLog.create({
+        enrollment_id: reg.enrollment_id,
+        changed_by: new mongoose.Types.ObjectId(adminId),
+        action: 'EXAM_PROCESS_UPDATED',
+        field_name: 'exam_process',
+        old_value: oldValue || undefined,
+        new_value: [
+          reg.subject_code,
+          reg.bag_number,
+          reg.anonymous_code,
+          reg.attendance_status,
+          reg.exam_violation ? 'VPQC' : '',
+        ].filter(Boolean).join('/'),
+      });
+    }
+
+    if (reg.attendance_status === 'absent' || reg.exam_violation) {
+      await ExamScore.deleteOne({ registration_id: reg._id });
+    }
+
+    return reg;
   }
 
   async enterExamScore(registrationId: string, score: number, levelPassed?: string, adminId?: string, passThreshold = 50) {
@@ -378,7 +632,8 @@ export class AdminService {
 
     const reg = await ExamRegistration.findById(registrationId).populate('schedule_id', 'language');
     if (!reg) throw new Error('Đăng ký thi không tồn tại');
-    if (reg.status !== 'confirmed') throw new Error('Chỉ có thể nhập điểm cho thí sinh đã xác nhận thi');
+    if (!['confirmed', 'absent'].includes(reg.status)) throw new Error('Chỉ có thể nhập điểm cho thí sinh đã xác nhận thi');
+    this.assertCanEnterExamScore(reg);
 
     const enrollment = await EnrollmentForm.findById(reg.enrollment_id);
     if (!enrollment) throw new Error('Hồ sơ không tồn tại');
@@ -443,21 +698,21 @@ export class AdminService {
     const reg = await ExamRegistration.findById(registrationId).populate('schedule_id', 'language');
     if (!reg) throw new Error('Đăng ký thi không tồn tại');
     if (reg.status !== 'confirmed') throw new Error('Chỉ có thể nhập điểm cho thí sinh đã xác nhận thi');
+    await this.updateExamProcess(registrationId, data, adminId);
+    const updatedReg = await ExamRegistration.findById(registrationId).populate('schedule_id', 'language');
+    if (!updatedReg) throw new Error('Đăng ký thi không tồn tại');
+    this.assertCanEnterExamScore(updatedReg);
 
-    const enrollment = await EnrollmentForm.findById(reg.enrollment_id);
+    const enrollment = await EnrollmentForm.findById(updatedReg.enrollment_id);
     if (!enrollment) throw new Error('Hồ sơ không tồn tại');
-    const scheduleLanguage = typeof reg.schedule_id === 'object' && 'language' in reg.schedule_id
-      ? String((reg.schedule_id as unknown as { language?: string }).language || '')
+    const scheduleLanguage = typeof updatedReg.schedule_id === 'object' && 'language' in updatedReg.schedule_id
+      ? String((updatedReg.schedule_id as unknown as { language?: string }).language || '')
       : '';
     const result = calculateExamResult(numericScore, enrollment.language || scheduleLanguage, getStringValue(data.level_passed), Number(data.pass_threshold || 50));
 
-    reg.bag_number = getStringValue(data.bag_number);
-    reg.anonymous_code = getStringValue(data.anonymous_code);
-    await reg.save();
-
-    const existingScore = await ExamScore.findOne({ registration_id: reg._id });
+    const existingScore = await ExamScore.findOne({ registration_id: updatedReg._id });
     await ExamScore.findOneAndUpdate(
-      { registration_id: reg._id },
+      { registration_id: updatedReg._id },
       {
         score: numericScore,
         level_passed: result.level_passed,
@@ -470,7 +725,7 @@ export class AdminService {
 
     if (adminId) {
       await EnrollmentLog.create({
-        enrollment_id: reg.enrollment_id,
+        enrollment_id: updatedReg.enrollment_id,
         changed_by: new mongoose.Types.ObjectId(adminId),
         action: existingScore ? 'EXAM_SCORE_DRAFT_UPDATED' : 'EXAM_SCORE_DRAFT_ENTERED',
         field_name: 'exam_score',
@@ -483,6 +738,7 @@ export class AdminService {
   async syncExamScore(registrationId: string, adminId?: string) {
     const reg = await ExamRegistration.findById(registrationId);
     if (!reg) throw new Error('Đăng ký thi không tồn tại');
+    this.assertCanEnterExamScore(reg);
     const score = await ExamScore.findOne({ registration_id: reg._id });
     if (!score) throw new Error('Chưa có điểm để đồng bộ');
     const enrollment = await EnrollmentForm.findById(reg.enrollment_id);
@@ -531,6 +787,7 @@ export class AdminService {
     const registrations = await ExamRegistration.find({ schedule_id: new mongoose.Types.ObjectId(scheduleId) }).select('_id enrollment_id').lean();
     let synced = 0;
     let skipped = 0;
+    const errors: string[] = [];
 
     for (const registration of registrations) {
       const score = await ExamScore.findOne({ registration_id: registration._id });
@@ -546,11 +803,16 @@ export class AdminService {
         score.pass_threshold = result.pass_threshold;
         await score.save();
       }
-      await this.syncExamScore(registration._id.toString(), adminId);
-      synced += 1;
+      try {
+        await this.syncExamScore(registration._id.toString(), adminId);
+        synced += 1;
+      } catch (err) {
+        skipped += 1;
+        errors.push(`${registration._id}: ${(err as Error).message}`);
+      }
     }
 
-    return { matched: registrations.length, synced, skipped };
+    return { matched: registrations.length, synced, skipped, errors };
   }
 
   async getPrograms() {
@@ -558,17 +820,256 @@ export class AdminService {
   }
 
   async createProgram(data: Record<string, unknown>) {
-    return TrainingProgram.create(data);
+    return TrainingProgram.create(normalizeProgramInput(data));
   }
 
   async updateProgram(id: string, data: Record<string, unknown>) {
-    const program = await TrainingProgram.findByIdAndUpdate(id, data, { new: true });
+    const program = await TrainingProgram.findByIdAndUpdate(id, normalizeProgramInput(data), { new: true });
     if (!program) throw new Error('Hệ đào tạo không tồn tại');
     return program;
   }
 
   async deleteProgram(id: string) {
     await TrainingProgram.findByIdAndUpdate(id, { is_active: false });
+  }
+
+  async getClasses({ status = '', language = '', level = '' } = {}) {
+    const filter: Record<string, unknown> = {};
+    if (status) filter.status = status;
+    if (language) filter.language = language;
+    if (level) filter.level_code = level;
+
+    const classes = await CourseClass.find(filter)
+      .populate('program_id', 'name level_code language')
+      .sort({ created_at: -1 })
+      .lean();
+
+    return classes;
+  }
+
+  async createClass(data: Record<string, unknown>, adminId: string) {
+    const name = getStringValue(data.name);
+    const language = getStringValue(data.language);
+    const levelCode = getStringValue(data.level_code);
+    const maxStudents = Number(data.max_students);
+    if (!name || !language || !levelCode) throw new Error('Tên lớp, ngôn ngữ và cấp độ là bắt buộc');
+    if (!Number.isFinite(maxStudents) || maxStudents < 1) throw new Error('Sĩ số tối đa không hợp lệ');
+
+    const programId = getStringValue(data.program_id);
+    if (programId) {
+      const program = await TrainingProgram.findById(programId);
+      if (!program) throw new Error('Chương trình đào tạo không tồn tại');
+      if (program.language !== language || program.level_code !== levelCode) {
+        throw new Error('Chương trình không khớp ngôn ngữ hoặc cấp độ lớp');
+      }
+    }
+
+    const code = getStringValue(data.code) || createClassCode(language, levelCode);
+    return CourseClass.create({
+      code,
+      name,
+      language,
+      level_code: levelCode,
+      program_id: programId ? new mongoose.Types.ObjectId(programId) : undefined,
+      teacher_name: getStringValue(data.teacher_name),
+      facility: getStringValue(data.facility),
+      schedule: getStringValue(data.schedule),
+      start_date: data.start_date ? new Date(String(data.start_date)) : undefined,
+      end_date: data.end_date ? new Date(String(data.end_date)) : undefined,
+      max_students: maxStudents,
+      status: normalizeClassStatus(data.status),
+      note: getStringValue(data.note),
+      created_by: new mongoose.Types.ObjectId(adminId),
+    });
+  }
+
+  async updateClass(id: string, data: Record<string, unknown>) {
+    const klass = await CourseClass.findById(id);
+    if (!klass) throw new Error('Lớp học không tồn tại');
+
+    const update: Record<string, unknown> = {};
+    const stringFields = ['code', 'name', 'language', 'level_code', 'teacher_name', 'facility', 'schedule', 'note'];
+    for (const field of stringFields) {
+      const value = getStringValue(data[field]);
+      if (value !== undefined) update[field] = value;
+    }
+    if (data.program_id !== undefined) {
+      const programId = getStringValue(data.program_id);
+      update.program_id = programId ? new mongoose.Types.ObjectId(programId) : undefined;
+    }
+    if (data.start_date !== undefined) update.start_date = data.start_date ? new Date(String(data.start_date)) : undefined;
+    if (data.end_date !== undefined) update.end_date = data.end_date ? new Date(String(data.end_date)) : undefined;
+    if (data.max_students !== undefined) {
+      const maxStudents = Number(data.max_students);
+      if (!Number.isFinite(maxStudents) || maxStudents < klass.current_students) {
+        throw new Error('Sĩ số tối đa không được nhỏ hơn số học viên hiện tại');
+      }
+      update.max_students = maxStudents;
+    }
+    if (data.status) {
+      update.status = normalizeClassStatus(data.status, klass.status);
+    }
+
+    const updated = await CourseClass.findByIdAndUpdate(id, update, { new: true });
+    if (!updated) throw new Error('Lớp học không tồn tại');
+    return updated;
+  }
+
+  async getClassStudents(classId: string) {
+    return EnrollmentForm.find({ class_id: new mongoose.Types.ObjectId(classId), is_deleted: false })
+      .populate('user_id', 'email full_name phone')
+      .select('user_id student_full_name parent_phone language level exam_level_passed exam_score program_name document_number status created_at')
+      .sort({ student_full_name: 1, created_at: 1 })
+      .lean();
+  }
+
+  private getClassEligibleFilter(klass: { _id: unknown; language: string; level_code: string; program_id?: unknown }) {
+    const filter: Record<string, unknown> = {
+      is_deleted: false,
+      payment_status: 'success',
+      program_id: { $exists: true, $ne: null },
+      language: klass.language,
+      status: { $nin: ['cancelled', 'rejected'] },
+      $or: [
+        { class_id: { $exists: false } },
+        { class_id: null },
+        { class_id: klass._id },
+      ],
+    };
+
+    if (klass.program_id) filter.program_id = klass.program_id;
+    filter.$and = [{
+      $or: [
+        { exam_required: false, level: klass.level_code },
+        { exam_required: true, exam_pass_status: 'passed', exam_level_passed: klass.level_code },
+        { program_name: { $regex: klass.level_code, $options: 'i' } },
+      ],
+    }];
+
+    return filter;
+  }
+
+  async getEligibleClassEnrollments(classId: string, search = '') {
+    const klass = await CourseClass.findById(classId);
+    if (!klass) throw new Error('Lớp học không tồn tại');
+
+    const filter = this.getClassEligibleFilter(klass);
+    if (search) {
+      filter.$and = [
+        ...((filter.$and as Record<string, unknown>[]) || []),
+        {
+          $or: [
+            { student_full_name: { $regex: search, $options: 'i' } },
+            { document_number: { $regex: search, $options: 'i' } },
+            { student_cccd: { $regex: search, $options: 'i' } },
+            { parent_phone: { $regex: search, $options: 'i' } },
+          ],
+        },
+      ];
+    }
+
+    return EnrollmentForm.find(filter)
+      .select('student_full_name document_number parent_phone language level exam_level_passed exam_score program_name class_id status')
+      .sort({ created_at: 1 })
+      .limit(100)
+      .lean();
+  }
+
+  async assignEnrollmentToClass(classId: string, enrollmentId: string, adminId: string) {
+    const klass = await CourseClass.findById(classId);
+    if (!klass) throw new Error('Lớp học không tồn tại');
+    if (!['open', 'full'].includes(klass.status)) throw new Error('Lớp học đã đóng, không thể xếp thêm học viên');
+
+    const enrollment = await EnrollmentForm.findById(enrollmentId);
+    if (!enrollment || enrollment.is_deleted) throw new Error('Hồ sơ không tồn tại');
+    if (enrollment.payment_status !== 'success') throw new Error('Học viên chưa thanh toán lệ phí');
+    if (!enrollment.program_id) throw new Error('Học viên chưa chọn chương trình học');
+    if (enrollment.language !== klass.language) throw new Error('Ngôn ngữ học viên không khớp lớp');
+    if (klass.program_id && enrollment.program_id.toString() !== klass.program_id.toString()) {
+      throw new Error('Chương trình học viên không khớp lớp');
+    }
+    const effectiveLevel = enrollment.exam_required ? enrollment.exam_level_passed : enrollment.level;
+    if (effectiveLevel !== klass.level_code && !String(enrollment.program_name || '').includes(klass.level_code)) {
+      throw new Error('Cấp độ học viên không phù hợp với lớp');
+    }
+    if (enrollment.exam_required && enrollment.exam_pass_status !== 'passed') {
+      throw new Error('Học viên chưa đạt điều kiện đầu vào');
+    }
+
+    const oldClassId = enrollment.class_id?.toString();
+    if (oldClassId === classId) return { assigned: 0, alreadyAssigned: true };
+    if (klass.current_students >= klass.max_students) throw new Error('Lớp đã đủ sĩ số');
+
+    if (oldClassId) {
+      await CourseClass.updateOne({ _id: oldClassId, current_students: { $gt: 0 } }, { $inc: { current_students: -1 }, $set: { status: 'open' } });
+    }
+
+    enrollment.class_id = klass._id as mongoose.Types.ObjectId;
+    await enrollment.save();
+    klass.current_students += 1;
+    if (klass.current_students >= klass.max_students) klass.status = 'full';
+    await klass.save();
+
+    await EnrollmentLog.create({
+      enrollment_id: enrollment._id,
+      changed_by: new mongoose.Types.ObjectId(adminId),
+      action: 'CLASS_ASSIGNED',
+      field_name: 'class_id',
+      old_value: oldClassId,
+      new_value: classId,
+    });
+
+    await notificationService.create(
+      enrollment.user_id.toString(),
+      'Bạn đã được xếp lớp',
+      `Bạn đã được xếp vào lớp ${klass.name}${klass.schedule ? `, lịch học: ${klass.schedule}` : ''}.`,
+      'success',
+      '/tai-khoan'
+    );
+
+    return { assigned: 1, alreadyAssigned: false };
+  }
+
+  async autoAssignClassByLevel(classId: string, adminId: string) {
+    const klass = await CourseClass.findById(classId);
+    if (!klass) throw new Error('Lớp học không tồn tại');
+    if (!['open', 'full'].includes(klass.status)) throw new Error('Lớp học đã đóng');
+
+    const remaining = klass.max_students - klass.current_students;
+    if (remaining <= 0) throw new Error('Lớp đã đủ sĩ số');
+
+    const enrollments = await EnrollmentForm.find(this.getClassEligibleFilter(klass))
+      .sort({ exam_score: -1, created_at: 1 })
+      .limit(remaining);
+
+    let assigned = 0;
+    let skipped = 0;
+    for (const enrollment of enrollments) {
+      try {
+        const result = await this.assignEnrollmentToClass(classId, enrollment._id.toString(), adminId);
+        assigned += result.assigned;
+      } catch {
+        skipped += 1;
+      }
+    }
+
+    return { matched: enrollments.length, assigned, skipped, remaining_before: remaining };
+  }
+
+  async removeEnrollmentFromClass(classId: string, enrollmentId: string, adminId: string) {
+    const enrollment = await EnrollmentForm.findById(enrollmentId);
+    if (!enrollment || enrollment.class_id?.toString() !== classId) throw new Error('Học viên không thuộc lớp này');
+    enrollment.class_id = undefined;
+    await enrollment.save();
+    await CourseClass.updateOne({ _id: classId, current_students: { $gt: 0 } }, { $inc: { current_students: -1 }, $set: { status: 'open' } });
+    await EnrollmentLog.create({
+      enrollment_id: enrollment._id,
+      changed_by: new mongoose.Types.ObjectId(adminId),
+      action: 'CLASS_REMOVED',
+      field_name: 'class_id',
+      old_value: classId,
+      new_value: undefined,
+    });
   }
 
   async toggleUserActive(id: string) {
@@ -649,16 +1150,28 @@ export class AdminService {
         exam_code: registration.exam_code,
         student_name: user?.full_name,
         email: user?.email,
+        subject_code: registration.subject_code,
         room: room?.name,
         bag_number: registration.bag_number,
         anonymous_code: registration.anonymous_code,
+        attendance_status: registration.attendance_status,
+        absence_report_number: registration.absence_report_number,
+        absence_reason: registration.absence_reason,
+        exam_violation: registration.exam_violation ? '1' : '0',
+        violation_report_number: registration.violation_report_number,
+        violation_note: registration.violation_note,
         score: score?.score,
         level_passed: score?.level_passed,
+        pass_status: score?.pass_status,
         pass_threshold: score?.pass_threshold,
         score_status: score?.status,
       };
     }));
-    const headers = ['registration_id', 'exam_code', 'student_name', 'email', 'room', 'bag_number', 'anonymous_code', 'score', 'level_passed', 'pass_threshold', 'score_status'];
+    const headers = [
+      'registration_id', 'exam_code', 'student_name', 'email', 'subject_code', 'room', 'bag_number', 'anonymous_code',
+      'attendance_status', 'absence_report_number', 'absence_reason', 'exam_violation', 'violation_report_number', 'violation_note',
+      'score', 'level_passed', 'pass_status', 'pass_threshold', 'score_status',
+    ];
     return toCsv(headers, rows);
   }
 
@@ -729,11 +1242,14 @@ export class AdminService {
         name,
         language,
         level_code: levelCode,
+        level: levelCode,
         duration_months: parseNumber(row.duration_months, 3),
         sessions_per_week: parseNumber(row.sessions_per_week, 3),
         session_hours: parseNumber(row.session_hours, 2),
         tuition_fee: parseNumber(row.tuition_fee, 0),
-        min_score: parseNumber(row.min_score, 0),
+        min_score: row.min_score === undefined || row.min_score === ''
+          ? (PROGRAM_MIN_SCORE_BY_LEVEL[levelCode] ?? 0)
+          : parseNumber(row.min_score, 0),
         description: row.description || undefined,
         is_active: parseBoolean(row.is_active, true),
       };
@@ -831,13 +1347,15 @@ export class AdminService {
       }
 
       try {
-        await this.saveExamScoreDraft(registration._id.toString(), {
-          score: row.score,
-          level_passed: row.level_passed,
-          pass_threshold: row.pass_threshold || 50,
-          bag_number: row.bag_number,
-          anonymous_code: row.anonymous_code,
-        }, adminId);
+        await this.updateExamProcess(registration._id.toString(), row, adminId);
+        if (hasScoreValue(row.score)) {
+          await this.saveExamScoreDraft(registration._id.toString(), {
+            ...row,
+            score: row.score,
+            level_passed: row.level_passed,
+            pass_threshold: row.pass_threshold || 50,
+          }, adminId);
+        }
         result.imported += 1;
       } catch (err) {
         result.skipped += 1;
@@ -952,8 +1470,11 @@ export class AdminService {
 
   async assignEnrollmentsByExamDate(scheduleId: string, adminId: string) {
     const schedule = await ExamSchedule.findById(scheduleId);
-    if (!schedule) throw new Error('Lá»‹ch thi khÃ´ng tá»“n táº¡i');
-    if (schedule.status !== 'open') throw new Error('Lá»‹ch thi Ä‘Ã£ Ä‘Ã³ng');
+    if (!schedule) throw new Error('Lịch thi không tồn tại');
+    if (schedule.status !== 'open') throw new Error('Lịch thi đã đóng');
+    if (!Number.isFinite(schedule.max_slots) || schedule.max_slots < 1) {
+      throw new Error('Lịch thi chưa cấu hình số chỗ tối đa');
+    }
 
     const examDateKeys = getExamDateKeys(schedule.exam_date);
     const examDate = examDateKeys[0];
@@ -968,17 +1489,15 @@ export class AdminService {
     let assigned = 0;
     let moved = 0;
     let skipped = 0;
+    let alreadyAssigned = 0;
     let full = false;
+    let registeredSlots = await ExamRegistration.countDocuments({
+      schedule_id: schedule._id,
+      status: { $in: ['confirmed', 'pending', 'absent'] },
+    });
 
     for (const enrollment of enrollments) {
-      const currentSchedule = await ExamSchedule.findById(scheduleId);
-      if (!currentSchedule || currentSchedule.registered_slots >= currentSchedule.max_slots) {
-        full = true;
-        break;
-      }
-
       const existing = await ExamRegistration.findOne({ enrollment_id: enrollment._id }).sort({ created_at: -1 });
-      let registration = existing;
       if (existing) {
         const existingScore = await ExamScore.findOne({ registration_id: existing._id });
         if (existingScore) {
@@ -986,10 +1505,36 @@ export class AdminService {
           continue;
         }
         if (existing.schedule_id.toString() === scheduleId) {
-          skipped += 1;
+          const oldScheduleId = enrollment.exam_schedule_id?.toString();
+          enrollment.exam_schedule_id = new mongoose.Types.ObjectId(scheduleId);
+          enrollment.exam_confirmed = true;
+          if (enrollment.current_step < 4) {
+            enrollment.current_step = 4;
+            enrollment.status = 'step_4';
+          }
+          await enrollment.save();
+          if (oldScheduleId !== scheduleId) {
+            await EnrollmentLog.create({
+              enrollment_id: enrollment._id,
+              changed_by: new mongoose.Types.ObjectId(adminId),
+              action: 'EXAM_ASSIGNED_BY_DATE',
+              field_name: 'exam_schedule_id',
+              old_value: oldScheduleId,
+              new_value: scheduleId,
+            });
+          }
+          alreadyAssigned += 1;
           continue;
         }
+      }
 
+      if (registeredSlots >= schedule.max_slots) {
+        full = true;
+        skipped += 1;
+        continue;
+      }
+
+      if (existing) {
         await ExamSchedule.updateOne({ _id: existing.schedule_id }, { $inc: { registered_slots: -1 } });
         await ExamSchedule.updateOne({ _id: scheduleId }, { $inc: { registered_slots: 1 } });
         await this.releaseRoom(existing.room_id);
@@ -1000,7 +1545,7 @@ export class AdminService {
         await existing.save();
         moved += 1;
       } else {
-        registration = await ExamRegistration.create({
+        await ExamRegistration.create({
           user_id: enrollment.user_id,
           enrollment_id: enrollment._id,
           schedule_id: schedule._id,
@@ -1010,6 +1555,8 @@ export class AdminService {
         await ExamSchedule.updateOne({ _id: scheduleId }, { $inc: { registered_slots: 1 } });
         assigned += 1;
       }
+      registeredSlots += 1;
+
       const oldScheduleId = enrollment.exam_schedule_id?.toString();
       enrollment.exam_schedule_id = new mongoose.Types.ObjectId(scheduleId);
       enrollment.exam_confirmed = true;
@@ -1037,7 +1584,19 @@ export class AdminService {
       );
     }
 
-    return { exam_date: examDate, language: schedule.language, matched: enrollments.length, assigned, moved, skipped, full };
+    await ExamSchedule.updateOne({ _id: scheduleId }, { registered_slots: registeredSlots });
+
+    return {
+      exam_date: examDate,
+      language: schedule.language,
+      matched: enrollments.length,
+      assigned,
+      moved,
+      already_assigned: alreadyAssigned,
+      skipped,
+      full,
+      remaining_slots: Math.max(schedule.max_slots - registeredSlots, 0),
+    };
   }
 
   async getExamRegistrations({ scheduleId = '' } = {}) {

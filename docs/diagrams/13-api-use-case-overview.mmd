@@ -1,0 +1,102 @@
+flowchart LR
+    Student["Hoc vien / Phu huynh"]
+    Admin["Quan tri vien"]
+    VNPay["VNPay"]
+    Email["Email Service"]
+    Cloudinary["Cloudinary"]
+
+    UC01(("XemNoiDungCongKhai"))
+    UC02(("DangKy"))
+    UC03(("XacThucOTP"))
+    UC04(("DangNhap"))
+    UC05(("DangXuat"))
+    UC06(("QuenMatKhau"))
+    UC07(("CapNhatThongTin"))
+    UC08(("KhoiTaoHoSo"))
+    UC09(("KyChinhSach"))
+    UC10(("ThanhToan"))
+    UC11(("DienHoSo"))
+    UC12(("UploadFile"))
+    UC13(("DangKyThi"))
+    UC14(("BoQuaThi"))
+    UC15(("XemKetQuaThi"))
+    UC16(("ChonChuongTrinh"))
+    UC17(("NopHoSoGoc"))
+    UC18(("GuiPhucKhao"))
+    UC19(("XacNhanPhongVan"))
+    UC20(("XemHoaDon"))
+    UC21(("XemThongBao"))
+
+    UC22(("XemDashboard"))
+    UC23(("QuanLyNguoiDung"))
+    UC24(("QuanLyHoSo"))
+    UC25(("QuanLyLichThi"))
+    UC26(("QuanLyPhongThi"))
+    UC27(("XepThiSinh"))
+    UC28(("DanhSoTuiMaPhach"))
+    UC29(("NhapDongBoDiem"))
+    UC30(("QuanLyChuongTrinh"))
+    UC31(("ImportExportCSV"))
+    UC32(("GuiThongBao"))
+    UC33(("XuLyPhucKhao"))
+    UC34(("QuanLyPhongVan"))
+    UC35(("QuanLyHoaDon"))
+    UC36(("QuanLyBanner"))
+    UC37(("QuanLyTinTuc"))
+    UC38(("QuanLyCauHinh"))
+
+    Student --> UC01
+    Student --> UC02
+    Student --> UC03
+    Student --> UC04
+    Student --> UC05
+    Student --> UC06
+    Student --> UC07
+    Student --> UC08
+    Student --> UC09
+    Student --> UC10
+    Student --> UC11
+    Student --> UC12
+    Student --> UC13
+    Student --> UC14
+    Student --> UC15
+    Student --> UC16
+    Student --> UC17
+    Student --> UC18
+    Student --> UC19
+    Student --> UC20
+    Student --> UC21
+
+    Admin --> UC04
+    Admin --> UC05
+    Admin --> UC21
+    Admin --> UC22
+    Admin --> UC23
+    Admin --> UC24
+    Admin --> UC25
+    Admin --> UC26
+    Admin --> UC27
+    Admin --> UC28
+    Admin --> UC29
+    Admin --> UC30
+    Admin --> UC31
+    Admin --> UC32
+    Admin --> UC33
+    Admin --> UC34
+    Admin --> UC35
+    Admin --> UC36
+    Admin --> UC37
+    Admin --> UC38
+
+    UC10 --> VNPay
+    UC02 --> Email
+    UC03 --> Email
+    UC06 --> Email
+    UC21 --> Email
+    UC32 --> Email
+    UC12 --> Cloudinary
+
+    classDef actor fill:#ffffff,stroke:#111111,stroke-width:2px,color:#111111;
+    classDef usecase fill:#ffffff,stroke:#111111,stroke-width:1.5px,color:#111111;
+    class Student,Admin,VNPay,Email,Cloudinary actor;
+    class UC01,UC02,UC03,UC04,UC05,UC06,UC07,UC08,UC09,UC10,UC11,UC12,UC13,UC14,UC15,UC16,UC17,UC18,UC19,UC20,UC21,UC22,UC23,UC24,UC25,UC26,UC27,UC28,UC29,UC30,UC31,UC32,UC33,UC34,UC35,UC36,UC37,UC38 usecase;

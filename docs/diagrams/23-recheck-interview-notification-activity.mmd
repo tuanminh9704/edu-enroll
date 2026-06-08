@@ -1,0 +1,44 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart TD
+    Start([Bat dau])
+    Login[Nguoi dung dang nhap]
+    ChooseFeature{Chon chuc nang}
+
+    OpenRecheck[Mo phuc khao]
+    HasExamResult{Da co ket qua thi?}
+    HasPendingRecheck{Da co yeu cau dang xu ly?}
+    SubmitRecheck[Gui yeu cau phuc khao]
+    AdminReview[Admin xu ly phuc khao]
+    UpdateRecheck[Cap nhat ket qua phuc khao]
+    NotifyRecheck[Thong bao ket qua cho hoc vien]
+
+    OpenInterview[Xem lich phong van]
+    HasInterview{Co lich phong van?}
+    RespondInterview[Xac nhan tham gia hoac tu choi]
+    UpdateInterview[Cap nhat trang thai phong van]
+    NotifyInterview[Thong bao trang thai phong van]
+
+    OpenInbox[Xem thong bao va hoa don]
+    QueryInbox[Lay danh sach thong bao/hoa don]
+    HasData{Co du lieu?}
+    ShowList[Hien thi danh sach]
+    MarkRead[Danh dau thong bao da doc]
+    ShowEmpty[Hien thi danh sach rong]
+
+    ShowError[Hien thi thong bao loi]
+    End([Ket thuc])
+
+    Start --> Login --> ChooseFeature
+    ChooseFeature -- Phuc khao --> OpenRecheck --> HasExamResult
+    HasExamResult -- Khong --> ShowError --> End
+    HasExamResult -- Co --> HasPendingRecheck
+    HasPendingRecheck -- Co --> ShowError
+    HasPendingRecheck -- Khong --> SubmitRecheck --> AdminReview --> UpdateRecheck --> NotifyRecheck --> End
+
+    ChooseFeature -- Phong van --> OpenInterview --> HasInterview
+    HasInterview -- Khong --> ShowError
+    HasInterview -- Co --> RespondInterview --> UpdateInterview --> NotifyInterview --> End
+
+    ChooseFeature -- Thong bao hoa don --> OpenInbox --> QueryInbox --> HasData
+    HasData -- Khong --> ShowEmpty --> End
+    HasData -- Co --> ShowList --> MarkRead --> End

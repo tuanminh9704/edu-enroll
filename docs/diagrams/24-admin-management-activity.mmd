@@ -1,0 +1,70 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart TD
+    Start([Bat dau])
+    AdminLogin[Admin dang nhap]
+    CheckRole{Co quyen admin?}
+    OpenDashboard[Mo dashboard quan tri]
+    LoadStats[Tai thong ke tong quan]
+    ChooseModule{Chon phan he quan ly}
+
+    ManageUsers[Quan ly nguoi dung]
+    UpdateUser[Khoa mo tai khoan hoac doi vai tro]
+    UserValid{User va role hop le?}
+
+    ManageEnrollments[Quan ly ho so tuyen sinh]
+    UpdateEnrollment[Cap nhat trang thai ho so]
+    EnrollmentValid{Ho so va trang thai hop le?}
+    WriteLog[Ghi log thay doi va tao thong bao]
+
+    ManageExam[Quan ly thi va diem]
+    SetupExam[Tao lich thi phong thi va xep thi sinh]
+    InputScores[Nhap hoac import diem]
+    ScoreValid{Diem hop le?}
+    SyncScores[Dong bo diem vao ho so]
+
+    ManageContent[Quan ly noi dung cau hinh]
+    UpdateContent[Tao sua an banner tin tuc cau hinh]
+    ContentValid{Du lieu hop le?}
+
+    ImportExport[Import export du lieu]
+    ProcessCsv[Parse validate va xu ly CSV]
+    CsvValid{File CSV hop le?}
+
+    Broadcast[Gui thong bao hang loat]
+    NotificationValid{Tieu de noi dung hop le?}
+    CreateNotifications[Tao thong bao cho nguoi nhan]
+
+    SaveChanges[Luu thay doi]
+    ShowResult[Hien thi ket qua thao tac]
+    ShowError[Hien thi thong bao loi]
+    End([Ket thuc])
+
+    Start --> AdminLogin --> CheckRole
+    CheckRole -- Khong --> ShowError --> End
+    CheckRole -- Co --> OpenDashboard --> LoadStats --> ChooseModule
+
+    ChooseModule -- Nguoi dung --> ManageUsers --> UpdateUser --> UserValid
+    UserValid -- Khong --> ShowError
+    UserValid -- Co --> SaveChanges
+
+    ChooseModule -- Ho so --> ManageEnrollments --> UpdateEnrollment --> EnrollmentValid
+    EnrollmentValid -- Khong --> ShowError
+    EnrollmentValid -- Co --> WriteLog --> SaveChanges
+
+    ChooseModule -- Thi va diem --> ManageExam --> SetupExam --> InputScores --> ScoreValid
+    ScoreValid -- Khong --> ShowError
+    ScoreValid -- Co --> SyncScores --> SaveChanges
+
+    ChooseModule -- Noi dung cau hinh --> ManageContent --> UpdateContent --> ContentValid
+    ContentValid -- Khong --> ShowError
+    ContentValid -- Co --> SaveChanges
+
+    ChooseModule -- Import export --> ImportExport --> ProcessCsv --> CsvValid
+    CsvValid -- Khong --> ShowError
+    CsvValid -- Co --> SaveChanges
+
+    ChooseModule -- Gui thong bao --> Broadcast --> NotificationValid
+    NotificationValid -- Khong --> ShowError
+    NotificationValid -- Co --> CreateNotifications --> SaveChanges
+
+    SaveChanges --> ShowResult --> End

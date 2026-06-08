@@ -52,6 +52,7 @@ export interface EnrollmentForm {
   program_id?: string;
   program_name?: string;
   tuition_fee?: number;
+  class_id?: string;
   // Final submission
   appointment_date?: string;
   buy_books?: number;

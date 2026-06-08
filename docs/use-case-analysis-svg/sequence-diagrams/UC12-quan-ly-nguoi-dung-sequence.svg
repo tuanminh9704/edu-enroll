@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#111"/></marker>
+  <marker id="openArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L9,3 L0,6" fill="none" stroke="#111" stroke-width="1.2"/></marker>
+</defs>
+<style>
+  .line{stroke:#111;stroke-width:1.45;fill:none;marker-end:url(#arrow)}
+  .return{stroke:#111;stroke-width:1.35;stroke-dasharray:7 5;fill:none;marker-end:url(#openArrow)}
+  .life{stroke:#111;stroke-width:1.25;stroke-dasharray:8 5}
+  .act,.shape{fill:#fff;stroke:#111;stroke-width:1.3}
+  .actorLine{stroke:#111;stroke-width:1.45;fill:none}
+  .txt{font-family:Arial,Helvetica,sans-serif;font-size:14px;fill:#111}
+  .head{font-family:Arial,Helvetica,sans-serif;font-size:14px;font-weight:700;fill:#111}
+  .title{font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:700;fill:#111}
+</style>
+<text x="561.5" y="34" text-anchor="middle" class="title">BIEU DO TUAN TU - UC12 QUẢN LÝ NGƯỜI DÙNG</text>
+
+  <circle cx="70" cy="58" r="14" class="shape"/>
+  <line x1="70" y1="72" x2="70" y2="116" class="actorLine"/>
+  <line x1="40" y1="92" x2="100" y2="92" class="actorLine"/>
+  <line x1="70" y1="116" x2="42" y2="154" class="actorLine"/>
+  <line x1="70" y1="116" x2="98" y2="154" class="actorLine"/>
+  <text x="70" y="182" text-anchor="middle" class="head">: Quản trị viên</text>
+
+  <circle cx="330" cy="76" r="30" class="shape"/>
+  <line x1="275" y1="76" x2="300" y2="76" class="actorLine"/>
+  <text x="330" y="128" text-anchor="middle" class="head">: QuanLyNguoiDungUI</text>
+
+  <circle cx="590" cy="76" r="30" class="shape"/>
+  <line x1="535" y1="76" x2="560" y2="76" class="actorLine"/>
+  <text x="590" y="128" text-anchor="middle" class="head">: AdminController</text>
+
+  <circle cx="840" cy="76" r="30" class="shape"/>
+  <line x1="785" y1="76" x2="810" y2="76" class="actorLine"/>
+  <text x="840" y="128" text-anchor="middle" class="head">: USERS</text>
+
+  <circle cx="1040" cy="76" r="30" class="shape"/>
+  <line x1="985" y1="76" x2="1010" y2="76" class="actorLine"/>
+  <text x="1040" y="128" text-anchor="middle" class="head">: USERS</text>
+<line x1="70" y1="148" x2="70" y2="744" class="life"/>
+<line x1="330" y1="148" x2="330" y2="744" class="life"/>
+<line x1="590" y1="148" x2="590" y2="744" class="life"/>
+<line x1="840" y1="148" x2="840" y2="744" class="life"/>
+<line x1="1040" y1="148" x2="1040" y2="744" class="life"/>
+<rect x="324" y="178" width="12" height="460" class="act"/>
+<rect x="584" y="178" width="12" height="460" class="act"/>
+<rect x="834" y="178" width="12" height="460" class="act"/>
+<rect x="1034" y="178" width="12" height="460" class="act"/>
+<path d="M82 186 L322 186" class="line"/>
+  <text x="94" y="178" class="txt">1: chonQuanLyNguoiDung()</text>
+<path d="M338 232 L322 232" class="line"/>
+  <text x="354" y="224" class="txt">2: hienThiManHinh()</text>
+<path d="M82 288 L322 288" class="line"/>
+  <text x="94" y="280" class="txt">3: nhapThongTinVaXacNhan()</text>
+<path d="M338 344 L582 344" class="line"/>
+  <text x="354" y="336" class="txt">4: guiYeuCauXuLy()</text>
+<path d="M598 400 L832 400" class="line"/>
+  <text x="614" y="392" class="txt">5: truyVanUSERS()</text>
+<path d="M848 456 L582 456" class="return"/>
+  <text x="614" y="448" class="txt">6: returnKetQua()</text>
+<path d="M598 512 L1032 512" class="line"/>
+  <text x="614" y="504" class="txt">7: capNhatHoacDocDuLieu()</text>
+<path d="M1048 568 L582 568" class="return"/>
+  <text x="614" y="560" class="txt">8: returnKetQua()</text>
+<path d="M598 624 L322 624" class="return"/>
+  <text x="354" y="616" class="txt">9: returnKetQua()</text>
+<path d="M338 680 L322 680" class="line"/>
+  <text x="354" y="672" class="txt">10: hienThiKetQua()</text>
+</svg>

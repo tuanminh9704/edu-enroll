@@ -45,6 +45,7 @@ export interface IEnrollmentForm extends Document {
   program_id?: mongoose.Types.ObjectId;
   program_name?: string;
   tuition_fee?: number;
+  class_id?: mongoose.Types.ObjectId;
   // Final submission
   appointment_date?: string;
   buy_books: boolean;
@@ -97,6 +98,7 @@ const EnrollmentFormSchema = new Schema<IEnrollmentForm>({
   program_id: { type: Schema.Types.ObjectId, ref: 'TrainingProgram' },
   program_name: String,
   tuition_fee: Number,
+  class_id: { type: Schema.Types.ObjectId, ref: 'CourseClass' },
   appointment_date: String,
   buy_books: { type: Boolean, default: false },
   document_number: String,

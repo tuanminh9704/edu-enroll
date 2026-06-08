@@ -285,6 +285,8 @@ sequenceDiagram
 - Chi tiet ho so tuyen sinh hoc vien: `docs/diagrams/10-use-cases-student-enrollment-detail.png` va `.svg`
 - Chi tiet lich thi/phong thi/diem thi admin: `docs/diagrams/11-use-cases-admin-exam-detail.png` va `.svg`
 - Chi tiet quan tri nguoi dung/ho so/chuong trinh/CSV/noi dung: `docs/diagrams/12-use-cases-admin-management-detail.png` va `.svg`
+- Tong quat API theo kieu actor-oval: `docs/diagrams/13-api-use-case-overview.png` va `.svg`
+- Tong quat API kieu UML nguoi que giong mau: `docs/diagrams/14-api-use-case-uml-style.svg`
 
 ## Sequence diagram: authentication
 

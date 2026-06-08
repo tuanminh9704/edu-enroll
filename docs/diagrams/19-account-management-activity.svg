@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="1820" viewBox="0 0 1280 1820" role="img" aria-labelledby="title desc">
+  <title id="title">Activity Diagram - Quan ly tai khoan</title>
+  <desc id="desc">Bieu do hoat dong cho use case quan ly tai khoan, gom xem thong tin, cap nhat ho so va doi mat khau.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #111827; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .node { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; rx: 10; }
+      .decision { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; }
+      .error { fill: #fef2f2; stroke: #dc2626; stroke-width: 2; rx: 10; }
+      .terminal { fill: #111827; stroke: #111827; stroke-width: 2; }
+      .terminalText { fill: #ffffff; font-size: 15px; font-weight: 700; }
+      .label { font-size: 15px; font-weight: 600; }
+      .small { font-size: 13px; fill: #475569; }
+      .edge { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .edgeNoArrow { stroke: #334155; stroke-width: 2; fill: none; }
+      .branchText { font-size: 13px; fill: #334155; font-weight: 700; }
+      .lane { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 1.5; }
+      .laneTitle { font-size: 18px; font-weight: 700; fill: #334155; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1280" height="1820" fill="#ffffff"/>
+  <text x="640" y="52" text-anchor="middle" class="title">Activity Diagram - UC03 Quan ly tai khoan</text>
+  <text x="640" y="80" text-anchor="middle" class="subtitle">Xem thong tin tai khoan, cap nhat ho so ca nhan va doi mat khau</text>
+
+  <rect x="60" y="120" width="360" height="1600" class="lane"/>
+  <rect x="460" y="120" width="360" height="1600" class="lane"/>
+  <rect x="860" y="120" width="360" height="1600" class="lane"/>
+  <text x="240" y="152" text-anchor="middle" class="laneTitle">Nguoi dung</text>
+  <text x="640" y="152" text-anchor="middle" class="laneTitle">Frontend</text>
+  <text x="1040" y="152" text-anchor="middle" class="laneTitle">He thong / API</text>
+
+  <rect x="165" y="185" width="150" height="44" rx="22" class="terminal"/>
+  <text x="240" y="213" text-anchor="middle" class="terminalText">Bat dau</text>
+
+  <rect x="100" y="270" width="280" height="70" class="node"/>
+  <text x="240" y="298" text-anchor="middle" class="label">Mo trang quan ly</text>
+  <text x="240" y="320" text-anchor="middle" class="label">tai khoan</text>
+
+  <rect x="500" y="270" width="280" height="70" class="node"/>
+  <text x="640" y="298" text-anchor="middle" class="label">Gui yeu cau lay</text>
+  <text x="640" y="320" text-anchor="middle" class="label">thong tin tai khoan</text>
+
+  <path d="M1040 260 L1180 325 L1040 390 L900 325 Z" class="decision"/>
+  <text x="1040" y="320" text-anchor="middle" class="label">Token</text>
+  <text x="1040" y="342" text-anchor="middle" class="label">hop le?</text>
+
+  <rect x="900" y="435" width="280" height="70" class="node"/>
+  <text x="1040" y="463" text-anchor="middle" class="label">Truy van thong tin</text>
+  <text x="1040" y="485" text-anchor="middle" class="label">nguoi dung</text>
+
+  <path d="M1040 555 L1180 620 L1040 685 L900 620 Z" class="decision"/>
+  <text x="1040" y="604" text-anchor="middle" class="label">Tai khoan ton tai</text>
+  <text x="1040" y="626" text-anchor="middle" class="label">va dang hoat dong?</text>
+
+  <rect x="500" y="725" width="280" height="70" class="node"/>
+  <text x="640" y="753" text-anchor="middle" class="label">Hien thi thong tin</text>
+  <text x="640" y="775" text-anchor="middle" class="label">tai khoan</text>
+
+  <path d="M240 850 L380 915 L240 980 L100 915 Z" class="decision"/>
+  <text x="240" y="910" text-anchor="middle" class="label">Chon</text>
+  <text x="240" y="932" text-anchor="middle" class="label">thao tac?</text>
+
+  <rect x="100" y="1040" width="280" height="70" class="node"/>
+  <text x="240" y="1068" text-anchor="middle" class="label">Cap nhat ho so</text>
+  <text x="240" y="1090" text-anchor="middle" class="label">ca nhan</text>
+
+  <rect x="500" y="1040" width="280" height="70" class="node"/>
+  <text x="640" y="1068" text-anchor="middle" class="label">Gui du lieu</text>
+  <text x="640" y="1090" text-anchor="middle" class="label">cap nhat ho so</text>
+
+  <path d="M1040 1010 L1180 1075 L1040 1140 L900 1075 Z" class="decision"/>
+  <text x="1040" y="1060" text-anchor="middle" class="label">Du lieu</text>
+  <text x="1040" y="1082" text-anchor="middle" class="label">hop le?</text>
+
+  <path d="M1040 1190 L1180 1255 L1040 1320 L900 1255 Z" class="decision"/>
+  <text x="1040" y="1240" text-anchor="middle" class="label">Dung chu</text>
+  <text x="1040" y="1262" text-anchor="middle" class="label">tai khoan?</text>
+
+  <rect x="900" y="1370" width="280" height="70" class="node"/>
+  <text x="1040" y="1398" text-anchor="middle" class="label">Cap nhat thong tin</text>
+  <text x="1040" y="1420" text-anchor="middle" class="label">tai khoan</text>
+
+  <rect x="500" y="1490" width="280" height="70" class="node"/>
+  <text x="640" y="1518" text-anchor="middle" class="label">Thong bao cap nhat</text>
+  <text x="640" y="1540" text-anchor="middle" class="label">thanh cong</text>
+
+  <rect x="100" y="1165" width="280" height="70" class="node"/>
+  <text x="240" y="1193" text-anchor="middle" class="label">Doi mat khau</text>
+
+  <rect x="500" y="1165" width="280" height="70" class="node"/>
+  <text x="640" y="1193" text-anchor="middle" class="label">Gui mat khau hien tai</text>
+  <text x="640" y="1215" text-anchor="middle" class="label">va mat khau moi</text>
+
+  <path d="M640 1285 L780 1350 L640 1415 L500 1350 Z" class="decision"/>
+  <text x="640" y="1334" text-anchor="middle" class="label">Mat khau hien tai</text>
+  <text x="640" y="1356" text-anchor="middle" class="label">dung?</text>
+
+  <path d="M640 1460 L780 1525 L640 1590 L500 1525 Z" class="decision"/>
+  <text x="640" y="1509" text-anchor="middle" class="label">Mat khau moi</text>
+  <text x="640" y="1531" text-anchor="middle" class="label">dat yeu cau?</text>
+
+  <rect x="900" y="1490" width="280" height="70" class="node"/>
+  <text x="1040" y="1518" text-anchor="middle" class="label">Cap nhat mat khau</text>
+  <text x="1040" y="1540" text-anchor="middle" class="label">va vo hieu token cu</text>
+
+  <rect x="900" y="1620" width="280" height="70" class="node"/>
+  <text x="1040" y="1648" text-anchor="middle" class="label">Thong bao doi mat khau</text>
+  <text x="1040" y="1670" text-anchor="middle" class="label">thanh cong</text>
+
+  <rect x="900" y="735" width="280" height="70" class="error"/>
+  <text x="1040" y="763" text-anchor="middle" class="label">Thong bao loi</text>
+  <text x="1040" y="785" text-anchor="middle" class="label">va khong luu thay doi</text>
+
+  <rect x="565" y="1740" width="150" height="44" rx="22" class="terminal"/>
+  <text x="640" y="1768" text-anchor="middle" class="terminalText">Ket thuc</text>
+
+  <path d="M240 229 L240 270" class="edge"/>
+  <path d="M380 305 L500 305" class="edge"/>
+  <path d="M780 305 L904 323" class="edge"/>
+  <text x="860" y="304" class="branchText">Kiem tra</text>
+  <path d="M1040 390 L1040 435" class="edge"/>
+  <text x="1062" y="418" class="branchText">Co</text>
+  <path d="M900 325 C770 325 770 710 900 770" class="edge"/>
+  <text x="824" y="520" class="branchText">Khong</text>
+  <path d="M1040 505 L1040 555" class="edge"/>
+  <path d="M900 620 C790 620 790 735 780 755" class="edge"/>
+  <text x="842" y="610" class="branchText">Co</text>
+  <path d="M1180 620 C1230 620 1230 770 1180 770" class="edge"/>
+  <text x="1204" y="692" class="branchText">Khong</text>
+  <path d="M500 760 C375 760 300 820 252 852" class="edge"/>
+  <path d="M240 980 L240 1040" class="edge"/>
+  <text x="270" y="1015" class="branchText">Cap nhat ho so</text>
+  <path d="M380 1075 L500 1075" class="edge"/>
+  <path d="M780 1075 L900 1075" class="edge"/>
+  <path d="M1040 1140 L1040 1190" class="edge"/>
+  <text x="1060" y="1166" class="branchText">Co</text>
+  <path d="M900 1075 C820 1080 820 760 900 760" class="edge"/>
+  <text x="835" y="950" class="branchText">Khong</text>
+  <path d="M1040 1320 L1040 1370" class="edge"/>
+  <text x="1060" y="1348" class="branchText">Co</text>
+  <path d="M900 1255 C800 1260 800 780 900 770" class="edge"/>
+  <text x="825" y="1130" class="branchText">Khong</text>
+  <path d="M1040 1440 C1040 1485 840 1525 780 1525" class="edge"/>
+  <path d="M500 1525 C430 1525 430 1762 565 1762" class="edge"/>
+  <path d="M240 980 C240 1040 240 1100 240 1165" class="edge"/>
+  <text x="110" y="1138" class="branchText">Doi mat khau</text>
+  <path d="M380 1200 L500 1200" class="edge"/>
+  <path d="M640 1235 L640 1285" class="edge"/>
+  <path d="M640 1415 L640 1460" class="edge"/>
+  <text x="660" y="1442" class="branchText">Co</text>
+  <path d="M780 1350 C840 1350 840 780 900 770" class="edge"/>
+  <text x="820" y="1328" class="branchText">Khong</text>
+  <path d="M780 1525 L900 1525" class="edge"/>
+  <text x="835" y="1510" class="branchText">Co</text>
+  <path d="M640 1590 C640 1680 910 1735 1040 1690" class="edge"/>
+  <text x="660" y="1632" class="branchText">Khong</text>
+  <path d="M1040 1560 L1040 1620" class="edge"/>
+  <path d="M1040 1690 C1040 1760 750 1762 715 1762" class="edge"/>
+  <path d="M900 805 C790 850 390 910 380 915" class="edge"/>
+  <path d="M240 980 C130 1070 130 1750 565 1762" class="edge"/>
+  <text x="94" y="1010" class="branchText">Khong thay doi</text>
+</svg>

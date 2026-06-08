@@ -1,0 +1,25 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart LR
+    Home["Trang chu<br/>/"]
+    Login["Dang nhap<br/>/dang-nhap"]
+    Register["Dang ky<br/>/dang-ky"]
+    Otp["Xac thuc OTP<br/>/xac-thuc-otp"]
+    Forgot["Quen mat khau<br/>/quen-mat-khau"]
+    UserDash["Tai khoan<br/>/tai-khoan"]
+    Enrollment["Ho so tuyen sinh<br/>/ho-so"]
+    Profile["Ho so ca nhan<br/>/ho-so-ca-nhan"]
+    Notify["Thong bao<br/>/thong-bao"]
+    AdminDash["Dashboard admin<br/>/quan-tri"]
+    AdminManage["Quan ly admin<br/>Nguoi dung / Ho so / Ky thi / Diem / Noi dung"]
+
+    Home --> Login
+    Home --> Register
+    Login --> UserDash
+    Register --> Otp --> Login
+    Login --> Forgot --> Login
+    UserDash --> Enrollment
+    UserDash --> Profile
+    UserDash --> Notify
+    UserDash --> AdminDash
+    AdminDash --> AdminManage
+

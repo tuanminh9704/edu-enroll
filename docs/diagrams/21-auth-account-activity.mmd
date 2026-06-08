@@ -1,0 +1,58 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart TD
+    Start([Bat dau])
+    ChooseAuth{Nguoi dung chon chuc nang}
+
+    Register[Dang ky tai khoan]
+    SubmitRegister[Gui thong tin dang ky]
+    EmailExists{Email da ton tai?}
+    CreateInactive[Tao tai khoan cho xac thuc]
+    SendOtp[Gui OTP qua email]
+    EnterOtp[Nguoi dung nhap OTP]
+    OtpValid{OTP hop le?}
+    ActivateAccount[Kich hoat tai khoan]
+
+    Login[Dang nhap]
+    SubmitLogin[Gui email va mat khau]
+    LoginValid{Thong tin dang nhap hop le?}
+    AccountActive{Tai khoan active?}
+    CreateTokens[Tao access token va refresh token]
+    RedirectByRole[Chuyen huong theo vai tro]
+
+    ManageAccount[Quan ly tai khoan]
+    GetProfile[Lay thong tin tai khoan hien tai]
+    TokenValid{Token hop le?}
+    ChooseManage{Chon thao tac}
+    UpdateProfile[Cap nhat ho so ca nhan]
+    ChangePassword[Doi mat khau]
+    DataValid{Du lieu hop le?}
+    PasswordValid{Mat khau hien tai dung va mat khau moi hop le?}
+    SaveProfile[Luu thong tin tai khoan]
+    SavePassword[Luu mat khau moi va vo hieu refresh token cu]
+
+    ShowError[Hien thi thong bao loi]
+    End([Ket thuc])
+
+    Start --> ChooseAuth
+    ChooseAuth -- Dang ky --> Register --> SubmitRegister --> EmailExists
+    EmailExists -- Co --> ShowError --> End
+    EmailExists -- Khong --> CreateInactive --> SendOtp --> EnterOtp --> OtpValid
+    OtpValid -- Co --> ActivateAccount --> End
+    OtpValid -- Khong --> ShowError
+
+    ChooseAuth -- Dang nhap --> Login --> SubmitLogin --> LoginValid
+    LoginValid -- Khong --> ShowError
+    LoginValid -- Co --> AccountActive
+    AccountActive -- Khong --> ShowError
+    AccountActive -- Co --> CreateTokens --> RedirectByRole --> End
+
+    ChooseAuth -- Quan ly tai khoan --> ManageAccount --> GetProfile --> TokenValid
+    TokenValid -- Khong --> ShowError
+    TokenValid -- Co --> ChooseManage
+    ChooseManage -- Cap nhat ho so --> UpdateProfile --> DataValid
+    DataValid -- Khong --> ShowError
+    DataValid -- Co --> SaveProfile --> End
+    ChooseManage -- Doi mat khau --> ChangePassword --> PasswordValid
+    PasswordValid -- Khong --> ShowError
+    PasswordValid -- Co --> SavePassword --> End
+    ChooseManage -- Khong thay doi --> End

@@ -1,0 +1,55 @@
+%%{init: {"theme": "base", "themeVariables": {"background": "#ffffff", "mainBkg": "#ffffff", "primaryColor": "#eff6ff", "primaryBorderColor": "#2563eb", "primaryTextColor": "#111827", "lineColor": "#334155", "secondaryColor": "#fff7ed", "tertiaryColor": "#fef2f2"}}}%%
+flowchart LR
+    subgraph Client["Client Layer - Trinh duyet nguoi dung"]
+        Browser["Web Browser"]
+        ReactApp["React App"]
+        PublicUI["Trang cong khai\nBanner / Tin tuc"]
+        AuthUI["Dang ky / Dang nhap\nQuan ly tai khoan"]
+        EnrollmentUI["Ho so tuyen sinh\nThanh toan / Thi / Chuong trinh"]
+        AdminUI["Trang quan tri"]
+
+        Browser --> ReactApp
+        ReactApp --> PublicUI
+        ReactApp --> AuthUI
+        ReactApp --> EnrollmentUI
+        ReactApp --> AdminUI
+    end
+
+    subgraph Network["Network"]
+        Http["HTTPS / REST API\nJSON + JWT"]
+    end
+
+    subgraph Server["Server Layer - Node.js / Express API"]
+        Routes["Routes"]
+        Middleware["Middleware\nCORS / Auth / Role / Validate"]
+        Controllers["Controllers"]
+        Services["Services\nBusiness Logic"]
+        Models["Mongoose Models"]
+
+        Routes --> Middleware --> Controllers --> Services --> Models
+    end
+
+    subgraph Data["Data Layer"]
+        MongoDB[(MongoDB)]
+    end
+
+    subgraph External["External Services"]
+        VNPay["VNPay\nPayment Gateway"]
+        Cloudinary["Cloudinary\nFile Storage"]
+        Email["Email Service\nOTP / Notifications"]
+    end
+
+    PublicUI --> Http
+    AuthUI --> Http
+    EnrollmentUI --> Http
+    AdminUI --> Http
+
+    Http --> Routes
+    Models --> MongoDB
+    Services --> VNPay
+    Services --> Cloudinary
+    Services --> Email
+
+    VNPay --> Http
+    Email -.-> Browser
+

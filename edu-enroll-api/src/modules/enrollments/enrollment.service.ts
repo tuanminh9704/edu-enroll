@@ -14,6 +14,38 @@ import { FIXED_EXAM_DATES } from '../../constants/exam';
 
 const BEGINNER_LEVELS = ['A1', 'N5', 'K1', 'HSK1', 'FR_A1'];
 
+const PROGRAM_MIN_SCORE_BY_LEVEL: Record<string, number> = {
+  A1: 0,
+  A2: 40,
+  B1: 55,
+  B2: 70,
+  C1: 85,
+  IELTS: 70,
+  TOEIC: 55,
+  N5: 0,
+  N4: 55,
+  N3: 70,
+  N2: 85,
+  N1: 90,
+  K1: 0,
+  K2: 50,
+  K3: 75,
+  TOPIK: 75,
+  HSK1: 0,
+  HSK3: 50,
+  HSK5: 75,
+  FR_A1: 0,
+  FR_A2: 45,
+  FR_B1: 65,
+  FR_B2: 80,
+};
+
+const getEffectiveProgramMinScore = (program: { min_score?: number; level_code?: string; level?: string }) => {
+  if (typeof program.min_score === 'number' && program.min_score > 0) return program.min_score;
+  const level = program.level_code || program.level || '';
+  return PROGRAM_MIN_SCORE_BY_LEVEL[level] ?? 0;
+};
+
 const logAction = async (
   enrollmentId: mongoose.Types.ObjectId,
   changedBy: mongoose.Types.ObjectId,
@@ -166,17 +198,13 @@ export class EnrollmentService {
   }
 
   async getExamSchedules(language: string) {
-    return FIXED_EXAM_DATES.map((date) => ({
-      id: date,
-      exam_date: date,
+    return ExamSchedule.find({
       language,
-      title: `Ngày kiểm tra ${date.split('-').reverse().join('/')}`,
-      location: 'Trung tâm sẽ thông báo sau khi công bố phòng thi',
-      format: 'offline',
-      max_slots: 0,
-      registered_slots: 0,
       status: 'open',
-    }));
+      exam_date: { $gte: new Date(new Date().toISOString().slice(0, 10)) },
+    })
+      .sort({ exam_date: 1, created_at: 1 })
+      .lean();
   }
 
   async registerExam(userId: string, scheduleId: string): Promise<void> {
@@ -280,7 +308,8 @@ export class EnrollmentService {
     if (!enrollment) throw new Error('Hồ sơ không tồn tại');
 
     if (!enrollment.exam_required) {
-      return TrainingProgram.find({ language: enrollment.language, level_code: { $in: BEGINNER_LEVELS }, is_active: true });
+      return TrainingProgram.find({ language: enrollment.language, level_code: { $in: BEGINNER_LEVELS }, is_active: true })
+        .sort({ min_score: 1, level_code: 1 });
     }
 
     const reg = await ExamRegistration.findOne({ user_id: userId }).sort({ created_at: -1 });
@@ -288,11 +317,14 @@ export class EnrollmentService {
       const score = await ExamScore.findOne({ registration_id: reg._id, status: 'scored' });
       if (score) {
         if (score.pass_status !== 'passed') return [];
-        return TrainingProgram.find({
+        const programs = await TrainingProgram.find({
           language: enrollment.language,
           is_active: true,
-          min_score: { $lte: score.score },
-        }).sort({ min_score: -1, level_code: 1 });
+        });
+
+        return programs
+          .filter((program) => getEffectiveProgramMinScore(program) <= score.score)
+          .sort((a, b) => getEffectiveProgramMinScore(b) - getEffectiveProgramMinScore(a) || a.level_code.localeCompare(b.level_code));
       }
     }
     return [];
@@ -313,7 +345,8 @@ export class EnrollmentService {
     if (!enrollment.exam_required && !BEGINNER_LEVELS.includes(program.level_code)) {
       throw new Error('Chương trình này yêu cầu kiểm tra năng lực đầu vào');
     }
-    if (enrollment.exam_required && (enrollment.exam_score ?? -1) < program.min_score) {
+    const requiredMinScore = getEffectiveProgramMinScore(program);
+    if (enrollment.exam_required && (enrollment.exam_score ?? -1) < requiredMinScore) {
       throw new Error('Điểm thi chưa đủ điều kiện chọn chương trình này');
     }
 

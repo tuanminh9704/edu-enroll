@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1123" height="794" viewBox="0 0 1123 794">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#111"/>
+    </marker>
+    <marker id="openArrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,3 L0,6" fill="none" stroke="#111" stroke-width="1.2"/>
+    </marker>
+  </defs>
+  <style>
+    .line { stroke: #111; stroke-width: 1.5; fill: none; marker-end: url(#arrow); }
+    .return { stroke: #111; stroke-width: 1.4; stroke-dasharray: 7 5; fill: none; marker-end: url(#openArrow); }
+    .life { stroke: #111; stroke-width: 1.4; stroke-dasharray: 8 5; }
+    .act { fill: #fff; stroke: #111; stroke-width: 1.3; }
+    .txt { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 15px; }
+    .title { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 19px; font-weight: 700; }
+    .head { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 16px; font-weight: 700; }
+  </style>
+
+  <text x="561.5" y="34" text-anchor="middle" class="title">BIEU DO TUAN TU - USE CASE XEM NOI DUNG CONG KHAI</text>
+
+  <!-- Actor -->
+  <circle cx="70" cy="82" r="14" class="act"/>
+  <line x1="70" y1="96" x2="70" y2="142" stroke="#111" stroke-width="1.5"/>
+  <line x1="38" y1="114" x2="102" y2="114" stroke="#111" stroke-width="1.5"/>
+  <line x1="70" y1="142" x2="38" y2="184" stroke="#111" stroke-width="1.5"/>
+  <line x1="70" y1="142" x2="102" y2="184" stroke="#111" stroke-width="1.5"/>
+  <text x="70" y="214" text-anchor="middle" class="head">: KhachTruyCap</text>
+
+  <!-- Lifeline headers -->
+  <line x1="260" y1="78" x2="315" y2="78" stroke="#111" stroke-width="2"/>
+  <circle cx="350" cy="78" r="31" class="act"/>
+  <text x="334" y="128" text-anchor="middle" class="head">: XemNoiDungCongKhaiUI</text>
+
+  <circle cx="595" cy="78" r="31" class="act"/>
+  <path d="M576 66 C593 45, 621 52, 623 75" stroke="#111" stroke-width="1.5" fill="none"/>
+  <text x="595" y="128" text-anchor="middle" class="head">: ContentController</text>
+
+  <line x1="820" y1="78" x2="930" y2="78" stroke="#111" stroke-width="2"/>
+  <circle cx="875" cy="78" r="31" class="act"/>
+  <text x="875" y="128" text-anchor="middle" class="head">: BANNERS</text>
+
+  <line x1="990" y1="78" x2="1090" y2="78" stroke="#111" stroke-width="2"/>
+  <circle cx="1040" cy="78" r="31" class="act"/>
+  <text x="1040" y="128" text-anchor="middle" class="head">: NEWS</text>
+
+  <!-- Lifelines -->
+  <line x1="70" y1="222" x2="70" y2="748" class="life"/>
+  <line x1="350" y1="145" x2="350" y2="748" class="life"/>
+  <line x1="595" y1="145" x2="595" y2="748" class="life"/>
+  <line x1="875" y1="145" x2="875" y2="748" class="life"/>
+  <line x1="1040" y1="145" x2="1040" y2="748" class="life"/>
+
+  <!-- Activations -->
+  <rect x="344" y="176" width="12" height="92" class="act"/>
+  <rect x="344" y="304" width="12" height="320" class="act"/>
+  <rect x="589" y="330" width="12" height="220" class="act"/>
+  <rect x="869" y="390" width="12" height="58" class="act"/>
+  <rect x="1034" y="482" width="12" height="58" class="act"/>
+
+  <!-- Messages -->
+  <path d="M82 185 L344 185" class="line"/>
+  <text x="102" y="176" class="txt">1: chonTrangChu()</text>
+
+  <path d="M356 224 L430 224 L430 190 L360 190" class="line"/>
+  <text x="374" y="216" class="txt">2: hienThiManHinhTrangChu()</text>
+
+  <path d="M82 312 L344 312" class="line"/>
+  <text x="102" y="303" class="txt">3: yeuCauXemNoiDungCongKhai()</text>
+
+  <path d="M356 342 L589 342" class="line"/>
+  <text x="390" y="333" class="txt">4: layNoiDungCongKhai()</text>
+
+  <path d="M601 398 L869 398" class="line"/>
+  <text x="640" y="389" class="txt">5: layDanhSachBanner()</text>
+
+  <path d="M869 446 L601 446" class="return"/>
+  <text x="668" y="438" class="txt">6: returnBanners()</text>
+
+  <path d="M601 490 L1034 490" class="line"/>
+  <text x="690" y="481" class="txt">7: layDanhSachTinTuc()</text>
+
+  <path d="M1034 538 L601 538" class="return"/>
+  <text x="766" y="530" class="txt">8: returnNews()</text>
+
+  <path d="M589 580 L356 580" class="return"/>
+  <text x="414" y="571" class="txt">9: returnKetQua()</text>
+
+  <path d="M356 626 L420 626 L420 590 L360 590" class="line"/>
+  <text x="374" y="618" class="txt">10: hienThiBannerVaTinTuc()</text>
+
+  <path d="M344 668 L82 668" class="return"/>
+  <text x="134" y="660" class="txt">11: hienThiTrangChu()</text>
+</svg>

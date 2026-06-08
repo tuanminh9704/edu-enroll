@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1440" viewBox="0 0 1320 1440" role="img">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #111827; }
+      .title { font-size: 28px; font-weight: 700; }
+      .subtitle { font-size: 15px; fill: #475569; }
+      .node { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; }
+      .decision { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; }
+      .error { fill: #fef2f2; stroke: #dc2626; stroke-width: 2; }
+      .terminal { fill: #111827; stroke: #111827; stroke-width: 2; }
+      .terminalText { fill: #fff; font-size: 14px; font-weight: 700; }
+      .label { font-size: 14px; font-weight: 600; }
+      .branchText { font-size: 13px; fill: #334155; font-weight: 700; }
+      .edge { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="0" y="0" width="1320" height="1440" fill="#ffffff"/>
+  <text x="660" y="45" text-anchor="middle" class="title">Activity Diagram - Quan tri he thong</text>
+  <text x="660" y="72" text-anchor="middle" class="subtitle">UC11 - UC18 - Dashboard, nguoi dung, ho so, thi diem, noi dung va import export</text>
+  <path d="M 660 149 L 660 185" class="edge"/>
+
+<path d="M 660 253 L 660 295" class="edge"/>
+
+<path d="M 775 350 L 1025 1120" class="edge"/>
+<text x="1039" y="1112" class="branchText">Khong</text>
+<path d="M 660 405 L 660 455" class="edge"/>
+<text x="674" y="447" class="branchText">Co</text>
+<path d="M 660 523 L 660 565" class="edge"/>
+
+<path d="M 545 620 L 205 760" class="edge"/>
+
+<path d="M 545 620 L 425 760" class="edge"/>
+
+<path d="M 660 675 L 645 760" class="edge"/>
+
+<path d="M 775 620 L 865 760" class="edge"/>
+
+<path d="M 775 620 L 1085 760" class="edge"/>
+
+<path d="M 660 675 L 645 980" class="edge"/>
+<text x="659" y="972" class="branchText">Thong bao</text>
+<path d="M 205 828 L 545 1175" class="edge"/>
+
+<path d="M 425 828 L 545 1175" class="edge"/>
+
+<path d="M 645 828 L 660 1120" class="edge"/>
+
+<path d="M 865 828 L 775 1175" class="edge"/>
+
+<path d="M 1085 828 L 775 1175" class="edge"/>
+
+<path d="M 645 1048 L 660 1120" class="edge"/>
+
+<path d="M 775 1175 L 900 1154" class="edge"/>
+<text x="914" y="1146" class="branchText">Khong</text>
+<path d="M 660 1230 L 660 1270" class="edge"/>
+<text x="674" y="1262" class="branchText">Co</text>
+<path d="M 660 1338 L 660 1370" class="edge"/>
+
+<path d="M 1025 1188 L 735 1392" class="edge"/>
+
+  <rect x="585" y="105" width="150" height="44" rx="22" class="terminal"/>
+<text x="660" y="132" text-anchor="middle" class="terminalText">Bat dau</text>
+<rect x="535" y="185" width="250" height="68" rx="10" class="node"/>
+<text x="660" y="224" text-anchor="middle" class="label">Admin dang nhap</text>
+<path d="M 660 295 L 775 350 L 660 405 L 545 350 Z" class="decision"/>
+<text x="660" y="355" text-anchor="middle" class="label">Co quyen admin?</text>
+<rect x="535" y="455" width="250" height="68" rx="10" class="node"/>
+<text x="660" y="485" text-anchor="middle" class="label">Mo dashboard va tai</text>
+<text x="660" y="503" text-anchor="middle" class="label">thong ke</text>
+<path d="M 660 565 L 775 620 L 660 675 L 545 620 Z" class="decision"/>
+<text x="660" y="625" text-anchor="middle" class="label">Chon phan he quan ly</text>
+<rect x="80" y="760" width="250" height="68" rx="10" class="node"/>
+<text x="205" y="799" text-anchor="middle" class="label">Quan ly nguoi dung</text>
+<rect x="300" y="760" width="250" height="68" rx="10" class="node"/>
+<text x="425" y="799" text-anchor="middle" class="label">Quan ly ho so tuyen sinh</text>
+<rect x="520" y="760" width="250" height="68" rx="10" class="node"/>
+<text x="645" y="799" text-anchor="middle" class="label">Quan ly thi va diem</text>
+<rect x="740" y="760" width="250" height="68" rx="10" class="node"/>
+<text x="865" y="790" text-anchor="middle" class="label">Quan ly noi dung cau</text>
+<text x="865" y="808" text-anchor="middle" class="label">hinh</text>
+<rect x="960" y="760" width="250" height="68" rx="10" class="node"/>
+<text x="1085" y="799" text-anchor="middle" class="label">Import export CSV</text>
+<rect x="520" y="980" width="250" height="68" rx="10" class="node"/>
+<text x="645" y="1019" text-anchor="middle" class="label">Gui thong bao hang loat</text>
+<path d="M 660 1120 L 775 1175 L 660 1230 L 545 1175 Z" class="decision"/>
+<text x="660" y="1180" text-anchor="middle" class="label">Du lieu thao tac hop le?</text>
+<rect x="535" y="1270" width="250" height="68" rx="10" class="node"/>
+<text x="660" y="1300" text-anchor="middle" class="label">Luu thay doi, ghi log va</text>
+<text x="660" y="1318" text-anchor="middle" class="label">tao thong bao neu can</text>
+<rect x="900" y="1120" width="250" height="68" rx="10" class="error"/>
+<text x="1025" y="1159" text-anchor="middle" class="label">Hien thi thong bao loi</text>
+<rect x="585" y="1370" width="150" height="44" rx="22" class="terminal"/>
+<text x="660" y="1397" text-anchor="middle" class="terminalText">Ket thuc</text>
+</svg>

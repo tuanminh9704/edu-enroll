@@ -27,6 +27,39 @@ const PROGRAMS = [
   { language: 'french', name: 'Tiếng Pháp B1 - DELF', level_code: 'FR_B1', duration_months: 5, sessions_per_week: 4, tuition_fee: 5800000, description: 'Luyện thi DELF B1 chuẩn châu Âu.' },
 ];
 
+const PROGRAM_MIN_SCORE_BY_LEVEL: Record<string, number> = {
+  A1: 0,
+  A2: 40,
+  B1: 55,
+  B2: 70,
+  C1: 85,
+  IELTS: 70,
+  TOEIC: 55,
+  N5: 0,
+  N4: 55,
+  N3: 70,
+  N2: 85,
+  N1: 90,
+  K1: 0,
+  K2: 50,
+  K3: 75,
+  TOPIK: 75,
+  HSK1: 0,
+  HSK3: 50,
+  HSK5: 75,
+  FR_A1: 0,
+  FR_A2: 45,
+  FR_B1: 65,
+  FR_B2: 80,
+};
+
+const withProgramDefaults = (program: typeof PROGRAMS[number]) => ({
+  ...program,
+  level: program.level_code,
+  min_score: PROGRAM_MIN_SCORE_BY_LEVEL[program.level_code] ?? 0,
+  is_active: true,
+});
+
 const fixedDate = (index: number) => new Date(`${FIXED_EXAM_DATES[index]}T00:00:00.000`);
 
 const EXAM_SCHEDULES = [
@@ -45,8 +78,14 @@ export const seedData = async () => {
   ]);
 
   if (programCount === 0) {
-    await TrainingProgram.insertMany(PROGRAMS.map(p => ({ ...p, is_active: true })));
+    await TrainingProgram.insertMany(PROGRAMS.map(withProgramDefaults));
     console.log(`Seeded ${PROGRAMS.length} training programs`);
+  } else {
+    await Promise.all(PROGRAMS.map((program) => TrainingProgram.updateOne(
+      { language: program.language, level_code: program.level_code },
+      { $set: { level: program.level_code, min_score: PROGRAM_MIN_SCORE_BY_LEVEL[program.level_code] ?? 0 } }
+    )));
+    console.log('Updated training program level/min_score defaults');
   }
 
   if (scheduleCount === 0) {

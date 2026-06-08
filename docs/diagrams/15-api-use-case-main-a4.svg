@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="794" height="1123" viewBox="0 0 794 1123">
+  <style>
+    .line { stroke: #333; stroke-width: 1.4; fill: none; }
+    .oval { stroke: #222; stroke-width: 1.5; fill: #fff; }
+    .actor { stroke: #222; stroke-width: 1.5; fill: #fff; }
+    .txt { font-family: Arial, Helvetica, sans-serif; fill: #111; }
+    .title { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 22px; font-weight: 700; }
+    .label { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 14px; }
+    .uc { font-family: Arial, Helvetica, sans-serif; fill: #111; font-size: 13px; font-weight: 600; }
+  </style>
+
+  <text x="397" y="38" text-anchor="middle" class="title">SO DO USE CASE TONG QUAT - EDU ENROLL API</text>
+
+  <!-- Actors -->
+  <circle cx="82" cy="278" r="14" class="actor"/>
+  <line x1="82" y1="292" x2="82" y2="338" class="line"/>
+  <line x1="50" y1="310" x2="114" y2="310" class="line"/>
+  <line x1="82" y1="338" x2="50" y2="380" class="line"/>
+  <line x1="82" y1="338" x2="114" y2="380" class="line"/>
+  <text x="82" y="410" text-anchor="middle" class="label">Hoc vien</text>
+  <text x="82" y="428" text-anchor="middle" class="label">/ Phu huynh</text>
+
+  <circle cx="82" cy="746" r="14" class="actor"/>
+  <line x1="82" y1="760" x2="82" y2="806" class="line"/>
+  <line x1="50" y1="778" x2="114" y2="778" class="line"/>
+  <line x1="82" y1="806" x2="50" y2="848" class="line"/>
+  <line x1="82" y1="806" x2="114" y2="848" class="line"/>
+  <text x="82" y="878" text-anchor="middle" class="label">Quan tri vien</text>
+
+  <circle cx="702" cy="256" r="14" class="actor"/>
+  <line x1="702" y1="270" x2="702" y2="316" class="line"/>
+  <line x1="670" y1="288" x2="734" y2="288" class="line"/>
+  <line x1="702" y1="316" x2="670" y2="358" class="line"/>
+  <line x1="702" y1="316" x2="734" y2="358" class="line"/>
+  <text x="702" y="388" text-anchor="middle" class="label">VNPay</text>
+
+  <circle cx="702" cy="470" r="14" class="actor"/>
+  <line x1="702" y1="484" x2="702" y2="530" class="line"/>
+  <line x1="670" y1="502" x2="734" y2="502" class="line"/>
+  <line x1="702" y1="530" x2="670" y2="572" class="line"/>
+  <line x1="702" y1="530" x2="734" y2="572" class="line"/>
+  <text x="702" y="602" text-anchor="middle" class="label">Email Service</text>
+
+  <!-- Use cases -->
+  <ellipse cx="398" cy="100" rx="128" ry="24" class="oval"/>
+  <text x="398" y="105" text-anchor="middle" class="uc">Xem noi dung cong khai</text>
+
+  <ellipse cx="398" cy="154" rx="128" ry="24" class="oval"/>
+  <text x="398" y="159" text-anchor="middle" class="uc">Dang ky / dang nhap</text>
+
+  <ellipse cx="398" cy="208" rx="128" ry="24" class="oval"/>
+  <text x="398" y="213" text-anchor="middle" class="uc">Quan ly tai khoan</text>
+
+  <ellipse cx="398" cy="262" rx="128" ry="24" class="oval"/>
+  <text x="398" y="267" text-anchor="middle" class="uc">Lap ho so tuyen sinh</text>
+
+  <ellipse cx="398" cy="316" rx="128" ry="24" class="oval"/>
+  <text x="398" y="321" text-anchor="middle" class="uc">Thanh toan le phi</text>
+
+  <ellipse cx="398" cy="370" rx="128" ry="24" class="oval"/>
+  <text x="398" y="375" text-anchor="middle" class="uc">Dang ky / xem ket qua thi</text>
+
+  <ellipse cx="398" cy="424" rx="128" ry="24" class="oval"/>
+  <text x="398" y="429" text-anchor="middle" class="uc">Chon chuong trinh hoc</text>
+
+  <ellipse cx="398" cy="478" rx="128" ry="24" class="oval"/>
+  <text x="398" y="483" text-anchor="middle" class="uc">Nop ho so goc</text>
+
+  <ellipse cx="398" cy="532" rx="128" ry="24" class="oval"/>
+  <text x="398" y="537" text-anchor="middle" class="uc">Phuc khao / phong van</text>
+
+  <ellipse cx="398" cy="586" rx="128" ry="24" class="oval"/>
+  <text x="398" y="591" text-anchor="middle" class="uc">Xem hoa don / thong bao</text>
+
+  <ellipse cx="398" cy="650" rx="128" ry="24" class="oval"/>
+  <text x="398" y="655" text-anchor="middle" class="uc">Xem dashboard</text>
+
+  <ellipse cx="398" cy="704" rx="128" ry="24" class="oval"/>
+  <text x="398" y="709" text-anchor="middle" class="uc">Quan ly nguoi dung</text>
+
+  <ellipse cx="398" cy="758" rx="128" ry="24" class="oval"/>
+  <text x="398" y="763" text-anchor="middle" class="uc">Quan ly ho so tuyen sinh</text>
+
+  <ellipse cx="398" cy="812" rx="128" ry="24" class="oval"/>
+  <text x="398" y="817" text-anchor="middle" class="uc">Quan ly thi va diem</text>
+
+  <ellipse cx="398" cy="866" rx="128" ry="24" class="oval"/>
+  <text x="398" y="871" text-anchor="middle" class="uc">Quan ly chuong trinh</text>
+
+  <ellipse cx="398" cy="920" rx="128" ry="24" class="oval"/>
+  <text x="398" y="925" text-anchor="middle" class="uc">Import / export du lieu</text>
+
+  <ellipse cx="398" cy="974" rx="128" ry="24" class="oval"/>
+  <text x="398" y="979" text-anchor="middle" class="uc">Gui thong bao</text>
+
+  <ellipse cx="398" cy="1028" rx="128" ry="24" class="oval"/>
+  <text x="398" y="1033" text-anchor="middle" class="uc">Quan ly noi dung / cau hinh</text>
+
+  <!-- Student links -->
+  <line x1="116" y1="302" x2="270" y2="100" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="154" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="208" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="262" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="316" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="370" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="424" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="478" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="532" class="line"/>
+  <line x1="116" y1="302" x2="270" y2="586" class="line"/>
+
+  <!-- Admin links -->
+  <line x1="116" y1="770" x2="270" y2="154" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="586" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="650" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="704" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="758" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="812" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="866" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="920" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="974" class="line"/>
+  <line x1="116" y1="770" x2="270" y2="1028" class="line"/>
+
+  <!-- External system links -->
+  <line x1="526" y1="316" x2="670" y2="278" class="line"/>
+  <line x1="526" y1="154" x2="670" y2="492" class="line"/>
+  <line x1="526" y1="586" x2="670" y2="492" class="line"/>
+  <line x1="526" y1="974" x2="670" y2="492" class="line"/>
+</svg>

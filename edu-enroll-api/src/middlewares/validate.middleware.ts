@@ -10,7 +10,10 @@ export const validate = (schema: ZodSchema) => {
         field: e.path.join('.'),
         message: e.message,
       }));
-      errorResponse(res, 'Dữ liệu không hợp lệ', 400, errors);
+      const message = errors.length
+        ? `Dữ liệu không hợp lệ: ${errors.map((e) => e.message).join('; ')}`
+        : 'Dữ liệu không hợp lệ';
+      errorResponse(res, message, 400, errors);
       return;
     }
     req.body = result.data;

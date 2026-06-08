@@ -9,6 +9,7 @@ import {
   GraduationCap,
   MessageSquare,
   Receipt,
+  School,
   Settings,
   Trophy,
   Users,
@@ -26,6 +27,7 @@ const menuItems = [
   { to: '/quan-tri/phong-van', icon: MessageSquare, label: 'Phỏng vấn' },
   { to: '/quan-tri/hoa-don', icon: Receipt, label: 'Hóa đơn' },
   { to: '/quan-tri/chuong-trinh', icon: BookOpen, label: 'Chương trình' },
+  { to: '/quan-tri/lop-hoc', icon: School, label: 'Lớp học' },
   { to: '/quan-tri/thong-bao', icon: Bell, label: 'Gửi thông báo' },
   { to: '/quan-tri/noi-dung', icon: Settings, label: 'Nội dung' },
 ];

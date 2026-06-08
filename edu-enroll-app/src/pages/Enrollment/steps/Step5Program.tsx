@@ -59,6 +59,7 @@ export default function Step5Program() {
   const filteredPrograms = enrollment?.language
     ? programs.filter(p => p.language === enrollment.language)
     : programs;
+  const displayedPrograms = filteredPrograms;
 
   return (
     <Card className="shadow-md border-0 rounded-2xl">
@@ -73,6 +74,15 @@ export default function Step5Program() {
       </div>
 
       {error && <Alert message={error} type="error" showIcon className="mb-4" />}
+
+      {enrollment?.exam_required && !enrollment.exam_pass_status && (
+        <Alert
+          type="info"
+          showIcon
+          className="mb-4"
+          message="Vui lÃ²ng chá» admin Ä‘á»“ng bá»™ Ä‘iá»ƒm vÃ  xÃ¡c nháº­n Ä‘á»— theo ngÆ°á»¡ng trÆ°á»›c khi chá»n khÃ³a há»c."
+        />
+      )}
 
       {enrollment?.exam_required && enrollment.exam_pass_status === 'failed' && (
         <Alert
@@ -95,14 +105,16 @@ export default function Step5Program() {
 
       <Radio.Group className="w-full" value={selected} onChange={(e) => setSelected(e.target.value)}>
         <div className="space-y-3">
-          {(filteredPrograms.length > 0 ? filteredPrograms : programs).map((program) => (
+          {displayedPrograms.map((program) => {
+            const levelCode = program.level_code || program.level;
+            return (
             <Radio key={program.id} value={program.id} className="w-full">
               <div className={`w-full border-2 rounded-xl p-4 ml-2 transition-all ${selected === program.id ? 'border-indigo-400 bg-indigo-50' : 'border-gray-200 hover:border-indigo-200'}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="font-semibold text-gray-900">{program.name}</h3>
-                      <Tag color={LEVEL_COLORS[program.level] || 'blue'}>{program.level}</Tag>
+                      <Tag color={LEVEL_COLORS[levelCode] || 'blue'}>{levelCode}</Tag>
                     </div>
                     <p className="text-sm text-gray-500 mb-2">{program.description}</p>
                     <div className="flex flex-wrap gap-4 text-sm text-gray-500">
@@ -129,9 +141,20 @@ export default function Step5Program() {
                 </div>
               </div>
             </Radio>
-          ))}
+            );
+          })}
         </div>
       </Radio.Group>
+
+      {!loadingPrograms && displayedPrograms.length === 0 && (
+        <Alert
+          type="warning"
+          showIcon
+          className="mt-4"
+          message="ChÆ°a cÃ³ khÃ³a há»c Ä‘á»§ Ä‘iá»u kiá»‡n Ä‘á»ƒ chá»n."
+          description="Danh sÃ¡ch khÃ³a há»c chá»‰ hiá»ƒn thá»‹ sau khi Ä‘iá»ƒm Ä‘Æ°á»£c Ä‘á»“ng bá»™ vÃ  chá»‰ bao gá»“m cÃ¡c khÃ³a cÃ³ Ä‘iá»ƒm tá»‘i thiá»ƒu nhá» hÆ¡n hoáº·c báº±ng Ä‘iá»ƒm thi Ä‘Ã£ Ä‘á»—."
+        />
+      )}
 
       <Button
         type="primary"

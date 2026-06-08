@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1480" height="860" viewBox="0 0 1480 860" role="img" aria-labelledby="title desc">
+  <title id="title">Client Server Architecture - Edu Enroll</title>
+  <desc id="desc">Kien truc he thong Client Server gom React Client, Node Express API, MongoDB va cac dich vu ngoai.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #111827; }
+      .title { font-size: 30px; font-weight: 700; }
+      .subtitle { font-size: 16px; fill: #475569; }
+      .group { fill: #f8fafc; stroke: #cbd5e1; stroke-width: 2; rx: 16; }
+      .groupTitle { font-size: 18px; font-weight: 700; fill: #334155; }
+      .node { fill: #eff6ff; stroke: #2563eb; stroke-width: 2; rx: 10; }
+      .server { fill: #fff7ed; stroke: #ea580c; stroke-width: 2; rx: 10; }
+      .data { fill: #ecfdf5; stroke: #059669; stroke-width: 2; }
+      .external { fill: #fef2f2; stroke: #dc2626; stroke-width: 2; rx: 10; }
+      .network { fill: #f5f3ff; stroke: #7c3aed; stroke-width: 2; rx: 10; }
+      .label { font-size: 15px; font-weight: 600; }
+      .small { font-size: 13px; fill: #475569; }
+      .edge { stroke: #334155; stroke-width: 2.2; fill: none; marker-end: url(#arrow); }
+      .dash { stroke: #64748b; stroke-width: 2; fill: none; stroke-dasharray: 8 6; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="1480" height="860" fill="#ffffff"/>
+  <text x="740" y="50" text-anchor="middle" class="title">2.3.1. Thiet ke kien truc he thong Client - Server</text>
+  <text x="740" y="78" text-anchor="middle" class="subtitle">React Client giao tiep Node.js / Express API qua REST, API xu ly nghiep vu va ket noi MongoDB cung dich vu ngoai</text>
+
+  <rect x="45" y="120" width="360" height="620" class="group"/>
+  <text x="225" y="153" text-anchor="middle" class="groupTitle">Client Layer</text>
+  <text x="225" y="175" text-anchor="middle" class="small">Trinh duyet nguoi dung</text>
+
+  <rect x="90" y="215" width="270" height="64" class="node"/>
+  <text x="225" y="241" text-anchor="middle" class="label">Web Browser</text>
+  <text x="225" y="263" text-anchor="middle" class="small">Hoc vien / Phu huynh / Admin</text>
+
+  <rect x="90" y="315" width="270" height="64" class="node"/>
+  <text x="225" y="341" text-anchor="middle" class="label">React App</text>
+  <text x="225" y="363" text-anchor="middle" class="small">Routing, state, UI pages</text>
+
+  <rect x="80" y="420" width="125" height="74" class="node"/>
+  <text x="142" y="448" text-anchor="middle" class="label">Public UI</text>
+  <text x="142" y="470" text-anchor="middle" class="small">Banner / Tin tuc</text>
+
+  <rect x="245" y="420" width="125" height="74" class="node"/>
+  <text x="307" y="448" text-anchor="middle" class="label">Auth UI</text>
+  <text x="307" y="470" text-anchor="middle" class="small">Login / Profile</text>
+
+  <rect x="80" y="535" width="125" height="84" class="node"/>
+  <text x="142" y="565" text-anchor="middle" class="label">Enrollment</text>
+  <text x="142" y="587" text-anchor="middle" class="small">Ho so / Thi</text>
+
+  <rect x="245" y="535" width="125" height="84" class="node"/>
+  <text x="307" y="565" text-anchor="middle" class="label">Admin UI</text>
+  <text x="307" y="587" text-anchor="middle" class="small">Quan tri</text>
+
+  <rect x="470" y="315" width="230" height="95" class="network"/>
+  <text x="585" y="348" text-anchor="middle" class="label">HTTPS / REST API</text>
+  <text x="585" y="372" text-anchor="middle" class="small">JSON request / response</text>
+  <text x="585" y="394" text-anchor="middle" class="small">JWT Authentication</text>
+
+  <rect x="765" y="120" width="370" height="620" class="group"/>
+  <text x="950" y="153" text-anchor="middle" class="groupTitle">Server Layer</text>
+  <text x="950" y="175" text-anchor="middle" class="small">Node.js / Express API</text>
+
+  <rect x="815" y="215" width="270" height="58" class="server"/>
+  <text x="950" y="249" text-anchor="middle" class="label">Routes</text>
+
+  <rect x="815" y="305" width="270" height="76" class="server"/>
+  <text x="950" y="335" text-anchor="middle" class="label">Middleware</text>
+  <text x="950" y="357" text-anchor="middle" class="small">CORS / Auth / Role / Validate</text>
+
+  <rect x="815" y="415" width="270" height="58" class="server"/>
+  <text x="950" y="449" text-anchor="middle" class="label">Controllers</text>
+
+  <rect x="815" y="505" width="270" height="76" class="server"/>
+  <text x="950" y="535" text-anchor="middle" class="label">Services</text>
+  <text x="950" y="557" text-anchor="middle" class="small">Business Logic</text>
+
+  <rect x="815" y="625" width="270" height="58" class="server"/>
+  <text x="950" y="659" text-anchor="middle" class="label">Mongoose Models</text>
+
+  <rect x="1215" y="265" width="205" height="112" class="group"/>
+  <text x="1317" y="300" text-anchor="middle" class="groupTitle">Data Layer</text>
+  <path d="M1245 325 C1245 300 1390 300 1390 325 L1390 355 C1390 380 1245 380 1245 355 Z" class="data"/>
+  <path d="M1245 325 C1245 350 1390 350 1390 325" class="data"/>
+  <text x="1317" y="348" text-anchor="middle" class="label">MongoDB</text>
+
+  <rect x="1215" y="450" width="205" height="245" class="group"/>
+  <text x="1317" y="483" text-anchor="middle" class="groupTitle">External Services</text>
+  <rect x="1240" y="515" width="155" height="45" class="external"/>
+  <text x="1317" y="543" text-anchor="middle" class="label">VNPay</text>
+  <rect x="1240" y="585" width="155" height="45" class="external"/>
+  <text x="1317" y="613" text-anchor="middle" class="label">Cloudinary</text>
+  <rect x="1240" y="655" width="155" height="45" class="external"/>
+  <text x="1317" y="683" text-anchor="middle" class="label">Email Service</text>
+
+  <path d="M225 279 L225 315" class="edge"/>
+  <path d="M225 379 L142 420" class="edge"/>
+  <path d="M225 379 L307 420" class="edge"/>
+  <path d="M142 494 L142 535" class="edge"/>
+  <path d="M307 494 L307 535" class="edge"/>
+
+  <path d="M360 347 L470 347" class="edge"/>
+  <path d="M370 457 C430 457 430 385 470 375" class="edge"/>
+  <path d="M370 575 C440 575 430 400 470 390" class="edge"/>
+  <path d="M700 362 L815 244" class="edge"/>
+
+  <path d="M950 273 L950 305" class="edge"/>
+  <path d="M950 381 L950 415" class="edge"/>
+  <path d="M950 473 L950 505" class="edge"/>
+  <path d="M950 581 L950 625" class="edge"/>
+
+  <path d="M1085 654 C1145 654 1165 345 1245 345" class="edge"/>
+  <path d="M1085 543 C1160 543 1175 537 1240 537" class="edge"/>
+  <path d="M1085 543 C1160 543 1175 607 1240 607" class="edge"/>
+  <path d="M1085 543 C1160 543 1175 677 1240 677" class="edge"/>
+  <path d="M1240 537 C1125 500 760 455 700 385" class="dash"/>
+  <path d="M1317 700 C1170 790 370 790 225 279" class="dash"/>
+</svg>
